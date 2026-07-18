@@ -1,0 +1,151 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software or its analysis, please cite the repository (below) and,
+  where relevant, the underlying data products and the mechanism paper that motivates it.
+  Full citations are in References.md.
+title: >-
+  Surface TiO2 and Lunar Crustal Magnetism: An Underpowered Spatial Co-location Analysis
+abstract: >-
+  A spatially blocked analysis of whether present-day LROC WAC surface-TiO2 values
+  co-locate with lunar crustal magnetic-field anomalies. The declared global-map footprint is
+  underpowered because the effective number of independent spatial regions is about
+  one, the spatial blocks are much smaller than the fitted dependence range, and no
+  physically justified target effect anchors the injection-recovery power curve. The
+  impact-antipode benchmark is recovered against its separately matched null, but that
+  does not repair the structural power limit. The result is therefore inconclusive. It
+  does not test the temporal/thermal
+  intermittent-dynamo mechanism proposed by Nichols et al. (2026). The repository's
+  prospective plan was self-attested in Git and was not independently timestamped.
+type: software
+authors:
+  - given-names: Lemon
+    alias: lemoon01110
+version: "1.0.0"
+date-released: "2026-07-17"
+license: MIT
+url: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
+repository-code: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
+keywords:
+  - lunar crustal magnetism
+  - intermittent dynamo
+  - titanium
+  - machine learning
+  - spatially blocked cross-validation
+  - statistical power
+  - terrain validity
+  - GRAIL
+references:
+  # --- Motivating mechanism and literature benchmark ---
+  - type: article
+    scope: "Motivating temporal mechanism; not directly tested by this spatial analysis"
+    authors:
+      - family-names: Nichols
+        given-names: Claire I. O.
+      - family-names: Wade
+        given-names: Jon
+      - family-names: Stephenson
+        given-names: Simon N.
+    title: "An intermittent dynamo linked to high-titanium volcanism on the Moon"
+    journal: "Nature Geoscience"
+    volume: 19
+    start: 425
+    end: 431
+    year: 2026
+    doi: "10.1038/s41561-026-01929-y"
+  - type: article
+    scope: "Impact-basin antipode diagnostic benchmark"
+    authors:
+      - family-names: Hood
+        given-names: Lon L.
+      - family-names: Artemieva
+        given-names: Natalia A.
+    title: >-
+      Antipodal effects of lunar basin-forming impacts: Initial 3D simulations and
+      comparisons with observations
+    journal: "Icarus"
+    volume: 193
+    issue: 2
+    start: 485
+    end: 502
+    year: 2008
+    doi: "10.1016/j.icarus.2007.08.023"
+  - type: article
+    scope: "Hypothesis-space context (impact-plasma amplification of the dynamo)"
+    authors:
+      - family-names: Narrett
+        given-names: Isaac S.
+      - family-names: Oran
+        given-names: Rona
+      - family-names: Chen
+        given-names: Yuxi
+      - family-names: Miljković
+        given-names: Katarina
+      - family-names: Tóth
+        given-names: Gábor
+      - family-names: Mansbach
+        given-names: Elias N.
+      - family-names: Weiss
+        given-names: Benjamin P.
+    title: "Impact plasma amplification of the ancient lunar dynamo"
+    journal: "Science Advances"
+    volume: 11
+    year: 2025
+    doi: "10.1126/sciadv.adr7401"
+  # --- Data products (see Data-Sources.md for versions, access, and full provenance) ---
+  - type: data
+    scope: "Target: surface crustal magnetic field (Kaguya/Lunar Prospector SVM)"
+    authors:
+      - family-names: Tsunakawa
+        given-names: Hideo
+      - family-names: Takahashi
+        given-names: Futoshi
+      - family-names: Shimizu
+        given-names: Hisayoshi
+      - family-names: Shibuya
+        given-names: Hidetoshi
+      - family-names: Matsushima
+        given-names: Masaki
+    title: >-
+      Surface vector mapping of magnetic anomalies over the Moon using Kaguya and
+      Lunar Prospector observations
+    journal: "Journal of Geophysical Research: Planets"
+    volume: 120
+    start: 1160
+    end: 1185
+    year: 2015
+    doi: "10.1002/2014JE004785"
+  - type: data
+    scope: "Feature: surface TiO2 abundance (LROC WAC)"
+    authors:
+      - family-names: Sato
+        given-names: Hiroyuki
+    title: "Lunar mare TiO2 abundances estimated from UV/Vis reflectance"
+    journal: "Icarus"
+    volume: 296
+    start: 216
+    end: 238
+    year: 2017
+    doi: "10.1016/j.icarus.2017.06.013"
+  - type: data
+    scope: "Feature: GRAIL Bouguer gravity (GRGM1200A) and crustal thickness"
+    authors:
+      - family-names: Wieczorek
+        given-names: Mark A.
+    title: "The crust of the Moon as seen by GRAIL"
+    journal: "Science"
+    volume: 339
+    year: 2013
+    doi: "10.1126/science.1231530"
+  - type: data
+    scope: "Chronology: USGS Unified Geologic Map of the Moon (GIS v2, 1:5M)"
+    authors:
+      - family-names: Fortezzo
+        given-names: Corey M.
+      - family-names: Spudis
+        given-names: Paul D.
+      - family-names: Harrel
+        given-names: Stephanie L.
+    title: >-
+      Release of the Digital Unified Global Geologic Map of the Moon at 1:5,000,000-Scale
+    year: 2020
+    notes: "51st Lunar and Planetary Science Conference, Abstract #2760"

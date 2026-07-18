@@ -1,0 +1,4 @@
+# Development / test dependencies (not needed to run the pipeline).
+-r requirements.txt
+pytest>=7.4
+pyyaml>=6.0            # parse CITATION.cff in the metadata-integrity tests

@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Generated / downloaded data & results (reproducible from src.acquire + main.py)
+# NOTE: data/raw/sources/ holds ~2 GB of institutional downloads -- never commit it.
+data/
+results/
+tmp/
+
+# Local machine settings / caches
+.claude/settings.local.json
+lunar-titanium-magnetism-cache/
+
+# OS / editor
+.DS_Store
+*.swp
+.vscode/
+.idea/

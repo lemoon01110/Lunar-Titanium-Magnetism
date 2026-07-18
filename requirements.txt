@@ -1,0 +1,14 @@
+# Core pipeline dependencies (everything imported by src/ and main.py).
+# Version floors reflect the tested environment; newer minors should be fine.
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+scikit-learn>=1.4
+xgboost>=2.0          # NB: use_label_encoder was removed in 2.0; code no longer uses it
+shap>=0.44
+matplotlib>=3.8
+rasterio>=1.3
+pyproj>=3.6
+geopandas>=0.14       # required by the default real-data USGS polygon ingestion
+joblib>=1.3           # explicit parallel backend used by permutation evaluation
+fpdf2>=2.7.6          # modern fpdf2 API (text=/new_x/new_y); import name is "fpdf"

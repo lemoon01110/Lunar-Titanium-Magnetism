@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lunar-titanium-magnetism"
+version = "1.0.0"
+description = "An underpowered spatial co-location analysis of surface TiO2 and lunar crustal magnetism."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "lemoon01110" }]
+keywords = ["planetary-science", "lunar-magnetism", "geospatial-ml", "xgboost", "reproducible-research"]
+
+# Runtime dependencies are pinned by floor in requirements.txt (kept as the
+# canonical install path); mirrored here for tooling that reads pyproject.
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scipy>=1.11",
+    "scikit-learn>=1.4",
+    "xgboost>=2.0",
+    "shap>=0.44",
+    "matplotlib>=3.8",
+    "rasterio>=1.3",
+    "pyproj>=3.6",
+    "joblib>=1.3",
+    "fpdf2>=2.7.6",
+]
+
+[project.optional-dependencies]
+# Only needed to ingest the real USGS geologic shapefile.
+realdata = ["geopandas>=0.14"]
+# Only needed for the post-registration exploratory sweep (src/exploratory.py);
+# imported lazily so the core pipeline and tests do not require it.
+exploratory = ["optuna>=3.0"]
+dev = ["pytest>=7.4", "pyyaml>=6.0"]
+
+[tool.setuptools]
+packages = ["src"]
+
+# pytest configuration lives in pytest.ini (single source of truth).

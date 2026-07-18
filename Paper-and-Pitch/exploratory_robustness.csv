@@ -1,0 +1,4 @@
+analysis,full_pr_auc,h2_only_pr_auc,tio2_drop,inferentially_calibrated,exceeds_null_p95,note
+optuna_tpe,0.1988,0.1106,,False,,selected maximum; no selection-adjusted spatial null
+kmeans_folds,0.0333,0.0797,0.002,False,,"coarsest requested partition k=6; descriptive sweep [k=6:0.033, k=12:0.033, k=24:0.240, k=48:0.200]"
+sobel_gradients,0.0867,0.1106,-0.0022,False,,post-inspection feature set; repository-plan full=0.0890; +2 features

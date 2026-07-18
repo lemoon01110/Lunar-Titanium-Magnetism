@@ -1,0 +1,1824 @@
+{
+  "Run_Metadata": {
+    "data_mode": "real",
+    "scenario": null,
+    "input_directory": "data/raw",
+    "input_hashes_sha256": {
+      "data/raw/magnetic_anomaly.tif": "eaca3288bcc83462236aa99ea4a6c8484d16c7d5e4afd41f64eeba5ba06306eb",
+      "data/raw/tio2_abundance.tif": "acfc4f36869aea2158789b5759a52407fcb6ff39e57a7ba23177155581a9f046",
+      "data/raw/bouguer_gravity.tif": "5b5a35058b50a6b449961817d62a0631b54a09e636ceceb97315e679f1d9acb7",
+      "data/raw/geologic_age.tif": "aad3b0f93101771099a8904a4d2f955fa5fc8f184f4b837c37532b7ad4a83cc1",
+      "data/raw/crustal_thickness.tif": "8c9753622e01bf4192f734cf7834f04bfdc74445cee9940f19e142509a4e43fc",
+      "data/raw/tio2_mare_validity.tif": "82def1ae525bfd17eb6daaf71513290976c06d1856583b42a2ff7079b27b1fc0",
+      "data/raw/antipodes.csv": "1ed958ebccefa55f9dea1afca2d5769b41e49731957c523639f86695575baea9",
+      "data/raw/basins.csv": "d1ada76c40877c33258890dd390d9e7e64b27dd12023e35dfa49fe70ad5a59d5",
+      "data/raw/real_data_manifest.json": "df0cd73d8ec625b2d93f7e13b5b5438663eefc9df3c52f21b477819e83f155ed",
+      "data/raw/sources/source_manifest.json": "7b9800e68d979797e66b01f6af6fce2c4e4f6f307998fd9a56727a3c6b0b53ea"
+    },
+    "provenance_path": "data/raw/real_data_manifest.json",
+    "runtime": {
+      "python": "3.13.12",
+      "packages": {
+        "numpy": "2.4.6",
+        "pandas": "3.0.3",
+        "scikit-learn": "1.9.0",
+        "xgboost": "3.3.0",
+        "shap": "0.52.0",
+        "rasterio": "1.5.0",
+        "fpdf2": "2.8.7"
+      }
+    }
+  },
+  "config": {
+    "mode": "full",
+    "random_seed": 42,
+    "grid_res_deg": 1.0,
+    "age_mask": "imbrian",
+    "primary_threshold_nT": 5.0,
+    "n_outer_folds": 5,
+    "n_inner_folds": 3,
+    "n_permutations_requested": 100,
+    "n_power_simulations_per_strength": 30,
+    "spatial_block_size_deg": 30.0,
+    "features": [
+      "tio2",
+      "tio2_25km",
+      "tio2_50km",
+      "tio2_100km",
+      "gravity",
+      "interaction_25km",
+      "interaction_50km",
+      "interaction_100km",
+      "dist_to_antipode_km",
+      "dist_to_basin_rim_km",
+      "crustal_thickness",
+      "abs_latitude",
+      "nearside"
+    ],
+    "parameter_provenance": {
+      "grid_resolution_1deg": {
+        "role": "harmonised analysis grid (~30 km per degree at the equator)",
+        "selection": "computational/harmonisation choice; not optimised against the target",
+        "sensitivity": "native-resolution inference is not claimed"
+      },
+      "binary_thresholds_5_10nT": {
+        "role": "legacy rare-event classifier thresholds",
+        "selection": "researcher-chosen in the repository-local plan; not externally registered",
+        "sensitivity": "both thresholds reported; continuous-field analysis is now mandatory"
+      },
+      "tio2_buffers_25_50_100km": {
+        "role": "neighbourhood means for a postulated lateral surface proxy",
+        "selection": "researcher-chosen scales; no claim that Nichols et al. specified them",
+        "sensitivity": "family is ablated together; individual-scale interpretation is exploratory"
+      },
+      "gravity_bandpass_600_40km": {
+        "role": "exploratory control feature only",
+        "selection": "researcher-chosen difference-of-Gaussians cutoffs",
+        "sensitivity": "excluded from the TiO2 proxy and never used to define support"
+      },
+      "antipode_length_300km": {
+        "role": "synthetic-generator and H2 injection-control localisation",
+        "selection": "researcher-chosen validation/power-simulation scale, not an inferred lunar length",
+        "sensitivity": "does not enter the observed real-data antipode-distance feature"
+      },
+      "cv_blocks_30deg": {
+        "role": "legacy primary spatial partition",
+        "selection": "researcher-chosen in the repository-local plan",
+        "sensitivity": "15/20/30/45/60-degree results are reported as non-monotone partition sensitivity"
+      },
+      "primary_age_mask_imbrian": {
+        "role": "legacy primary surface-age subset",
+        "selection": "researcher-chosen temporal proxy; not source-rock dating",
+        "sensitivity": "Imbrian+Nectarian and unmasked cells are also reported"
+      },
+      "injection_power_grid": {
+        "role": "conditional sensitivity curve for the impact-antipode diagnostic control",
+        "selection": "standardised latent coefficients 0--4; no coefficient is asserted to be a physical target effect",
+        "sensitivity": "30 Monte Carlo fields per strength, 30-degree primary folds, and a 60-degree robustness check"
+      },
+      "continuous_ridge_alpha": {
+        "role": "regularization for the transparent continuous-field descriptive model",
+        "selection": "fixed analyst choice of 1.0; not tuned against held-out outcomes",
+        "sensitivity": "coefficients and blocked score increments are descriptive, not an inferential endpoint"
+      },
+      "minimum_effective_regions_8": {
+        "role": "post-hoc fail-closed adequacy threshold for strong positive or negative labels",
+        "selection": "analyst-chosen heuristic; not established by lunar physics or external registration",
+        "sensitivity": "the observed estimate is approximately 1, so reasonable alternatives do not change the current status"
+      },
+      "minimum_detection_power_0_80": {
+        "role": "post-hoc minimum power for an adequacy claim at a declared target effect",
+        "selection": "conventional analyst choice; the target effect remains undeclared",
+        "sensitivity": "reported separately from point-estimate and Wilson-lower-bound power"
+      },
+      "low_event_prevalence_0_02": {
+        "role": "descriptive underpowered-warning threshold only; it does not determine inference status",
+        "selection": "analyst-chosen post-hoc diagnostic threshold",
+        "sensitivity": "the exact prevalence and positive count are always reported"
+      }
+    }
+  },
+  "Method_Roles": {
+    "transparent_continuous_regression": "descriptive complement with no binding headline",
+    "threshold_classifier": "legacy repository-plan primary estimate retained for traceability",
+    "xgboost_shap": "exploratory model diagnostics; not a substitute for independent regions",
+    "injection_recovery": "conditional design-sensitivity analysis; not evidence about the Moon"
+  },
+  "Transparent_Continuous_Analysis": {
+    "estimand": "held-out prediction of log1p(surface magnetic-field magnitude in nT)",
+    "model": "standardised ridge regression",
+    "target_transform": "log1p(mag_anomaly)",
+    "n_rows": 20556,
+    "n_spatial_blocks": 72,
+    "fold_assignment": "caller-supplied inherited spatial folds",
+    "n_folds": 5,
+    "fold_ids": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "controls_only": {
+      "features": [
+        "dist_to_antipode_km",
+        "dist_to_basin_rim_km",
+        "crustal_thickness",
+        "abs_latitude",
+        "nearside"
+      ],
+      "r2": {
+        "mean": 0.25904044210930255,
+        "std": 0.1376628591246897,
+        "min": 0.06676082437057751,
+        "max": 0.4763293226586931,
+        "per_fold": [
+          0.20725764487507903,
+          0.3337849135708246,
+          0.4763293226586931,
+          0.06676082437057751,
+          0.2110695050713386
+        ]
+      },
+      "mae_log1p_nT": {
+        "mean": 0.24194354648070862,
+        "std": 0.023898680164768555,
+        "min": 0.20283254003448492,
+        "max": 0.2745481963332071,
+        "per_fold": [
+          0.2391104600033489,
+          0.2745481963332071,
+          0.23633315193174806,
+          0.20283254003448492,
+          0.256893384100754
+        ]
+      }
+    },
+    "controls_plus_tio2": {
+      "features": [
+        "dist_to_antipode_km",
+        "dist_to_basin_rim_km",
+        "crustal_thickness",
+        "abs_latitude",
+        "nearside",
+        "tio2",
+        "tio2_25km",
+        "tio2_50km",
+        "tio2_100km"
+      ],
+      "r2": {
+        "mean": 0.27116067080679673,
+        "std": 0.13664229476949016,
+        "min": 0.07558624349443843,
+        "max": 0.4805325914464079,
+        "per_fold": [
+          0.2229696830786242,
+          0.3529940883334527,
+          0.4805325914464079,
+          0.07558624349443843,
+          0.22372074768106076
+        ]
+      },
+      "mae_log1p_nT": {
+        "mean": 0.23790125779880372,
+        "std": 0.0236707379942209,
+        "min": 0.19849534177777461,
+        "max": 0.27036362372362777,
+        "per_fold": [
+          0.23311436408671782,
+          0.27036362372362777,
+          0.23658414861613805,
+          0.19849534177777461,
+          0.2509488107897603
+        ]
+      }
+    },
+    "tio2_incremental_r2": {
+      "mean": 0.01212022869749423,
+      "std": 0.005233932593312109,
+      "min": 0.00420326878771482,
+      "max": 0.019209174762628067,
+      "per_fold": [
+        0.015712038203545164,
+        0.019209174762628067,
+        0.00420326878771482,
+        0.008825419123860923,
+        0.012651242609722169
+      ]
+    },
+    "descriptive_standardised_coefficients_no_independence_claim": {
+      "dist_to_antipode_km": -0.2030271777084701,
+      "dist_to_basin_rim_km": 0.15097678334388562,
+      "crustal_thickness": -0.066917527416255,
+      "abs_latitude": -0.1092206701728318,
+      "nearside": 0.09536788376002878,
+      "tio2": 0.003071938558259024,
+      "tio2_25km": 0.003071938559038703,
+      "tio2_50km": -0.01913026015360389,
+      "tio2_100km": -0.05201378146975546
+    },
+    "inference_note": "Fold scores and coefficients are descriptive; no row-level p-value is valid when the effective number of independent spatial regions is small."
+  },
+  "Terrain_Validity_Sensitivity": {
+    "analysis": "post_result_terrain_validity_sensitivity",
+    "mask": {
+      "column": "tio2_terrain_valid",
+      "source": "USGS Unified Geologic Map of the Moon 1:5M GIS v2, GeoUnits",
+      "source_fields": [
+        "FIRST_Unit"
+      ],
+      "selection_rule": "exact FIRST_Unit membership in {Em, Im1, Im2, Imd}",
+      "is_proxy": true,
+      "limitations": [
+        "USGS 1:5M geologic units are a generalized surface-geology proxy, not the formal pixel-level validity domain published for the LROC WAC calibration.",
+        "Exact mare-unit polygons conservatively exclude mapped superposed crater, ejecta, plains, and dark-mantling units even where they occur inside a mare.",
+        "Map-unit boundaries and their rasterization are resolution dependent; edge pixels can be classification mixtures.",
+        "The row-local geology proxy restricts this sensitivity to raw TiO2 only; it does not establish formal WAC validity or support for buffered TiO2 features."
+      ],
+      "buffer_support_km": 0.0,
+      "n_rows_at_validation": 20556,
+      "n_terrain_valid_at_validation": 6232,
+      "terrain_valid_fraction_at_validation": 0.3031718233119284,
+      "uses_target_to_define_mask": false,
+      "uses_tio2_to_define_mask": false,
+      "n_rows_in_analysis_scope": 20556,
+      "n_terrain_valid_in_analysis_scope": 6232,
+      "terrain_valid_fraction_in_analysis_scope": 0.3031718233119284
+    },
+    "design": {
+      "folds_assigned_on_full_scope_before_terrain_filter": true,
+      "fold_assignment_uses_target": false,
+      "mare_rows_inherit_full_scope_spatial_folds": true,
+      "spatial_group_column": "spatial_block",
+      "h1_features_evaluated": [
+        "tio2"
+      ],
+      "excluded_unsupported_tio2_buffers": [
+        "tio2_25km",
+        "tio2_50km",
+        "tio2_100km"
+      ],
+      "exploratory_tio2_gravity_interactions_excluded": true,
+      "interpretation": "sensitivity analysis of present-day surface TiO2 spatial co-location; not a test of intermittent-dynamo timing"
+    },
+    "full_scope": {
+      "n_pixels": 20556,
+      "n_spatial_blocks": 72,
+      "n_positive_pixels": 286,
+      "n_positive_spatial_blocks": 15,
+      "positive_prevalence": 0.013913212687293248,
+      "n_inherited_folds_present": 5,
+      "skipped": false,
+      "usable_inherited_fold_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "H1_Plus_Controls_PR_AUC": 0.07317917797310158,
+      "Controls_Only_PR_AUC": 0.07661983066893176,
+      "H2_Only_PR_AUC": 0.1105789749883233,
+      "H1_tio2_drop_mean": -0.003440652695830157,
+      "Wilcoxon_p_H1_gt_controls": 1.0,
+      "beats_h2_only": false,
+      "ablation_significant": false,
+      "per_fold": {
+        "fold_ids": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "H1_Plus_Controls_PR_AUC": [
+          0.0936789985916422,
+          0.1667277591566732,
+          0.054672730662433854,
+          0.0027022020427805546,
+          0.04811419941197815
+        ],
+        "Controls_Only_PR_AUC": [
+          0.09884536583973755,
+          0.16936431401546057,
+          0.05590750887096679,
+          0.0030643415180490697,
+          0.05591762310044478
+        ],
+        "H2_Only_PR_AUC": [
+          0.07901689133473354,
+          0.0777871843944887,
+          0.16641993247233575,
+          0.004034427111350188,
+          0.22563643962870839
+        ],
+        "H1_tio2_drop": [
+          -0.005166367248095341,
+          -0.00263655485878736,
+          -0.0012347782085329398,
+          -0.0003621394752685151,
+          -0.007803423688466628
+        ]
+      }
+    },
+    "mare_valid": {
+      "n_pixels": 6232,
+      "n_spatial_blocks": 45,
+      "n_positive_pixels": 58,
+      "n_positive_spatial_blocks": 9,
+      "positive_prevalence": 0.009306803594351733,
+      "n_inherited_folds_present": 5,
+      "skipped": false,
+      "usable_inherited_fold_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "H1_Plus_Controls_PR_AUC": 0.1252090729608948,
+      "Controls_Only_PR_AUC": 0.057594884900570006,
+      "H2_Only_PR_AUC": 0.03724463682691308,
+      "H1_tio2_drop_mean": 0.06761418806032478,
+      "Wilcoxon_p_H1_gt_controls": 0.21875,
+      "beats_h2_only": true,
+      "ablation_significant": false,
+      "per_fold": {
+        "fold_ids": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "H1_Plus_Controls_PR_AUC": [
+          0.3600118759808288,
+          0.22518407053736125,
+          0.018689449136819945,
+          0.012047240192841598,
+          0.010112728956622376
+        ],
+        "Controls_Only_PR_AUC": [
+          0.0984848484848485,
+          0.14173957088886743,
+          0.02051250214256792,
+          0.01908240951348348,
+          0.008155093473082683
+        ],
+        "H2_Only_PR_AUC": [
+          0.019478476303901135,
+          0.06418104340581782,
+          0.07746545428669273,
+          0.010924981791697014,
+          0.014173228346456693
+        ],
+        "H1_tio2_drop": [
+          0.2615270274959803,
+          0.08344449964849382,
+          -0.0018230530057479766,
+          -0.007035169320641882,
+          0.0019576354835396936
+        ]
+      }
+    },
+    "mare_minus_full": {
+      "comparison_inherited_fold_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "uses_identical_fold_ids_for_both_scopes": true,
+      "interpretation": "Descriptive scope contrast on common inherited folds; the scopes have different rows and prevalence, so this is not a paired causal effect.",
+      "H1_Plus_Controls_PR_AUC": 0.05202989498779323,
+      "Controls_Only_PR_AUC": -0.01902494576836175,
+      "H2_Only_PR_AUC": -0.07333433816141022,
+      "H1_tio2_drop_mean": 0.07105484075615494
+    },
+    "full_scope_continuous_raw_tio2": {
+      "estimand": "held-out prediction of log1p(surface magnetic-field magnitude in nT)",
+      "model": "standardised ridge regression",
+      "target_transform": "log1p(mag_anomaly)",
+      "n_rows": 20556,
+      "n_spatial_blocks": 72,
+      "fold_assignment": "caller-supplied inherited spatial folds",
+      "n_folds": 5,
+      "fold_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "controls_only": {
+        "features": [
+          "dist_to_antipode_km",
+          "dist_to_basin_rim_km",
+          "crustal_thickness",
+          "abs_latitude",
+          "nearside"
+        ],
+        "r2": {
+          "mean": 0.25904044210930255,
+          "std": 0.1376628591246897,
+          "min": 0.06676082437057751,
+          "max": 0.4763293226586931,
+          "per_fold": [
+            0.20725764487507903,
+            0.3337849135708246,
+            0.4763293226586931,
+            0.06676082437057751,
+            0.2110695050713386
+          ]
+        },
+        "mae_log1p_nT": {
+          "mean": 0.24194354648070862,
+          "std": 0.023898680164768555,
+          "min": 0.20283254003448492,
+          "max": 0.2745481963332071,
+          "per_fold": [
+            0.2391104600033489,
+            0.2745481963332071,
+            0.23633315193174806,
+            0.20283254003448492,
+            0.256893384100754
+          ]
+        }
+      },
+      "controls_plus_tio2": {
+        "features": [
+          "dist_to_antipode_km",
+          "dist_to_basin_rim_km",
+          "crustal_thickness",
+          "abs_latitude",
+          "nearside",
+          "tio2"
+        ],
+        "r2": {
+          "mean": 0.27029195461012606,
+          "std": 0.13688975631070638,
+          "min": 0.07565212752537931,
+          "max": 0.48055079675627177,
+          "per_fold": [
+            0.2206568028414868,
+            0.35271556720388186,
+            0.48055079675627177,
+            0.07565212752537931,
+            0.22188447872361083
+          ]
+        },
+        "mae_log1p_nT": {
+          "mean": 0.23825919817756708,
+          "std": 0.02357418239056565,
+          "min": 0.1989908548170747,
+          "max": 0.27040065264934593,
+          "per_fold": [
+            0.23371566005646796,
+            0.27040065264934593,
+            0.23651512018769116,
+            0.1989908548170747,
+            0.2516737031772556
+          ]
+        }
+      },
+      "tio2_incremental_r2": {
+        "mean": 0.011251512500823546,
+        "std": 0.004873688210155601,
+        "min": 0.00422147409757867,
+        "max": 0.018930653633057237,
+        "per_fold": [
+          0.013399157966407782,
+          0.018930653633057237,
+          0.00422147409757867,
+          0.0088913031548018,
+          0.010814973652272242
+        ]
+      },
+      "descriptive_standardised_coefficients_no_independence_claim": {
+        "dist_to_antipode_km": -0.2073353887487095,
+        "dist_to_basin_rim_km": 0.1509298645866737,
+        "crustal_thickness": -0.06522619052956184,
+        "abs_latitude": -0.10638403021256501,
+        "nearside": 0.09519889505713501,
+        "tio2": -0.05986477361198062
+      },
+      "inference_note": "Fold scores and coefficients are descriptive; no row-level p-value is valid when the effective number of independent spatial regions is small.",
+      "terrain_scope": "full age-restricted scope; raw row-local TiO2 comparator"
+    },
+    "mare_valid_continuous": {
+      "estimand": "held-out prediction of log1p(surface magnetic-field magnitude in nT)",
+      "model": "standardised ridge regression",
+      "target_transform": "log1p(mag_anomaly)",
+      "n_rows": 6232,
+      "n_spatial_blocks": 45,
+      "fold_assignment": "caller-supplied inherited spatial folds",
+      "n_folds": 5,
+      "fold_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "controls_only": {
+        "features": [
+          "dist_to_antipode_km",
+          "dist_to_basin_rim_km",
+          "crustal_thickness",
+          "abs_latitude",
+          "nearside"
+        ],
+        "r2": {
+          "mean": 0.4256910909525894,
+          "std": 0.14414458716544382,
+          "min": 0.2800991453103503,
+          "max": 0.6688787476756379,
+          "per_fold": [
+            0.35067455884564647,
+            0.32041036019100677,
+            0.6688787476756379,
+            0.2800991453103503,
+            0.5083926427403057
+          ]
+        },
+        "mae_log1p_nT": {
+          "mean": 0.19590058030145976,
+          "std": 0.02247683546870839,
+          "min": 0.15740566846036724,
+          "max": 0.2187046195824254,
+          "per_fold": [
+            0.21710424229607705,
+            0.2187046195824254,
+            0.19859246570729636,
+            0.15740566846036724,
+            0.1876959054611328
+          ]
+        }
+      },
+      "controls_plus_tio2": {
+        "features": [
+          "dist_to_antipode_km",
+          "dist_to_basin_rim_km",
+          "crustal_thickness",
+          "abs_latitude",
+          "nearside",
+          "tio2"
+        ],
+        "r2": {
+          "mean": 0.4383873881374967,
+          "std": 0.14428877224516098,
+          "min": 0.3021459510513005,
+          "max": 0.6797042449549443,
+          "per_fold": [
+            0.376837362831255,
+            0.3104054393239052,
+            0.6797042449549443,
+            0.3021459510513005,
+            0.5228439425260785
+          ]
+        },
+        "mae_log1p_nT": {
+          "mean": 0.1925218107238513,
+          "std": 0.024798311523605402,
+          "min": 0.15001504369688076,
+          "max": 0.22095206807162174,
+          "per_fold": [
+            0.21261793614766875,
+            0.22095206807162174,
+            0.19385391212380257,
+            0.15001504369688076,
+            0.18517009357928274
+          ]
+        }
+      },
+      "tio2_incremental_r2": {
+        "mean": 0.012696297184907257,
+        "std": 0.012575404909033024,
+        "min": -0.010004920867101585,
+        "max": 0.02616280398560855,
+        "per_fold": [
+          0.02616280398560855,
+          -0.010004920867101585,
+          0.010825497279306373,
+          0.022046805740950193,
+          0.014451299785772753
+        ]
+      },
+      "descriptive_standardised_coefficients_no_independence_claim": {
+        "dist_to_antipode_km": -0.2432946149978548,
+        "dist_to_basin_rim_km": 0.17912713496762855,
+        "crustal_thickness": -0.025223664101310547,
+        "abs_latitude": -0.09705774262890109,
+        "nearside": 0.08515527530127498,
+        "tio2": -0.04989917647531981
+      },
+      "inference_note": "Fold scores and coefficients are descriptive; no row-level p-value is valid when the effective number of independent spatial regions is small.",
+      "terrain_scope": "USGS mare-proxy mask; raw row-local TiO2 only"
+    },
+    "mare_minus_full_continuous": {
+      "comparison_inherited_fold_ids": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "uses_identical_fold_ids_for_both_scopes": true,
+      "tio2_incremental_r2_difference": 0.0014447846840837109,
+      "interpretation": "Descriptive common-fold scope contrast; the mare and full scopes contain different rows, so this is not a paired causal effect."
+    },
+    "mare_valid_spatial_structure": {
+      "variogram_range_km": 3289.4779741422185,
+      "approx_effective_sample_size": 1.0,
+      "cv_block_size_km": 909.7005127244845,
+      "block_to_range_ratio": 0.27654859521037006,
+      "inference_note": "Descriptive mare-scope structure diagnostic; it does not supply a terrain-specific rotation null or full-decision power calibration."
+    }
+  },
+  "Cross_Validation": {
+    "positive_prevalence": 0.013913212687293248,
+    "n_pixels": 20556,
+    "n_blocks": 72,
+    "Dummy_Stratified_PR_AUC": 0.014669240304737702,
+    "Dummy_Prior_PR_AUC": 0.013911926560994964,
+    "LogReg_PR_AUC": 0.08321247097934517,
+    "H2_Only_PR_AUC": 0.1105789749883233,
+    "H2_Only_PR_AUC_std": 0.07717465910442295,
+    "H2_Only_PR_AUC_per_fold": [
+      0.07901689133473354,
+      0.0777871843944887,
+      0.16641993247233575,
+      0.004034427111350188,
+      0.22563643962870839
+    ],
+    "XGB_Full_PR_AUC": 0.08897202056536738,
+    "XGB_Full_PR_AUC_std": 0.08006274594314104,
+    "XGB_Full_PR_AUC_per_fold": [
+      0.06425624770647367,
+      0.24105192301054215,
+      0.06897814440793755,
+      0.002521748196245427,
+      0.0680520395056381
+    ],
+    "XGB_Full_Tuned_PR_AUC": 0.10091284284031858,
+    "XGB_Full_Tuned_best_params": {
+      "learning_rate": 0.05,
+      "max_depth": 3,
+      "n_estimators": 200
+    }
+  },
+  "Ablation": {
+    "PR_AUC": {
+      "full": {
+        "mean": 0.08897202056536738,
+        "std": 0.08006274594314104,
+        "per_fold": [
+          0.06425624770647367,
+          0.24105192301054215,
+          0.06897814440793755,
+          0.002521748196245427,
+          0.0680520395056381
+        ]
+      },
+      "no_h1_tio2": {
+        "mean": 0.09196383430208926,
+        "std": 0.06127893435688087,
+        "per_fold": [
+          0.09325151213980773,
+          0.19526367022005398,
+          0.08985295465580698,
+          0.0029906614598991244,
+          0.07846037303487846
+        ]
+      },
+      "no_interaction": {
+        "mean": 0.08581714827822073,
+        "std": 0.07247431067419174,
+        "per_fold": [
+          0.051227589556515636,
+          0.21972707808234074,
+          0.08422845236267375,
+          0.0026288869340984674,
+          0.07127373445547508
+        ]
+      },
+      "no_exploratory": {
+        "mean": 0.07400516127159047,
+        "std": 0.05260656131639609,
+        "per_fold": [
+          0.06258064209030251,
+          0.16604699345948457,
+          0.07690343811589434,
+          0.0027583338602120344,
+          0.06173639883205887
+        ]
+      },
+      "h1_only": {
+        "mean": 0.01898712201470123,
+        "std": 0.012158381447876914,
+        "per_fold": [
+          0.004608462338663698,
+          0.0301103368844847,
+          0.027708283412318065,
+          0.0036514118792599806,
+          0.02885711555877969
+        ]
+      },
+      "h2_only": {
+        "mean": 0.1105789749883233,
+        "std": 0.07717465910442295,
+        "per_fold": [
+          0.07901689133473354,
+          0.0777871843944887,
+          0.16641993247233575,
+          0.004034427111350188,
+          0.22563643962870839
+        ]
+      }
+    },
+    "H1_tio2_drop_mean": -0.002991813736721874,
+    "H1_tio2_drop_per_fold": [
+      -0.028995264433334056,
+      0.045788252790488176,
+      -0.020874810247869427,
+      -0.00046891326365369745,
+      -0.010408333529240366
+    ],
+    "Wilcoxon_p_full_gt_no_h1": 0.78125,
+    "Exploratory_drop_mean": 0.014966859293776918
+  },
+  "Permutation_Test": {
+    "n_permutations": 100,
+    "n_unique_longitude_shifts": 100,
+    "sampled_with_replacement": false,
+    "identity_shift_excluded": true,
+    "observed_valid_fold_count": 5,
+    "accepted_rotation_valid_fold_counts": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "candidate_valid_fold_count_histogram": {
+      "4": 12,
+      "5": 113
+    },
+    "n_candidate_shifts_evaluated": 125,
+    "n_rejected_for_fold_count_mismatch": 12,
+    "n_valid_candidates_not_used": 13,
+    "accepted_longitude_shifts_pixels": [
+      336,
+      175,
+      243,
+      372,
+      351,
+      362,
+      294,
+      65,
+      172,
+      358,
+      370,
+      286,
+      194,
+      323,
+      261,
+      9,
+      380,
+      181,
+      3,
+      116,
+      309,
+      303,
+      328,
+      216,
+      250,
+      1,
+      128,
+      246,
+      132,
+      81,
+      87,
+      211,
+      342,
+      295,
+      271,
+      133,
+      187,
+      148,
+      223,
+      215,
+      166,
+      337,
+      329,
+      141,
+      373,
+      377,
+      145,
+      62,
+      167,
+      322,
+      25,
+      139,
+      27,
+      155,
+      119,
+      59,
+      214,
+      201,
+      218,
+      382,
+      78,
+      20,
+      339,
+      144,
+      239,
+      205,
+      135,
+      289,
+      305,
+      74,
+      153,
+      4,
+      244,
+      352,
+      300,
+      180,
+      108,
+      306,
+      34,
+      97,
+      354,
+      254,
+      212,
+      283,
+      311,
+      28,
+      169,
+      313,
+      381,
+      151,
+      293,
+      149,
+      260,
+      356,
+      101,
+      332,
+      242,
+      346,
+      285,
+      345
+    ],
+    "accepted_rotation_prevalence": {
+      "min": 0.007686320295777389,
+      "mean": 0.014274177855613935,
+      "max": 0.02276707530647986
+    },
+    "accepted_rotation_rows": {
+      "min": 20556,
+      "max": 20556
+    },
+    "Null_Mean_PR_AUC": 0.11269694372705379,
+    "Null_Std_PR_AUC": 0.05690337722455085,
+    "Null_95th_PR_AUC": 0.2255553778005245,
+    "Observed_PR_AUC": 0.08897202056536738,
+    "statistic_label": "mean PR-AUC across the observed number of evaluable spatial folds",
+    "features": [
+      "tio2",
+      "tio2_25km",
+      "tio2_50km",
+      "tio2_100km",
+      "gravity",
+      "interaction_25km",
+      "interaction_50km",
+      "interaction_100km",
+      "dist_to_antipode_km",
+      "dist_to_basin_rim_km",
+      "crustal_thickness",
+      "abs_latitude",
+      "nearside"
+    ],
+    "Empirical_p_value": 0.5643564356435643
+  },
+  "Diagnostic_Controls": {
+    "impact_antipode_benchmark": {
+      "role": "Literature-motivated positive-control benchmark; the simple global distance feature is not assumed to encode every antipodal process.",
+      "PR_AUC": 0.1105789749883233,
+      "spatial_rotation_null": {
+        "n_permutations": 100,
+        "n_unique_longitude_shifts": 100,
+        "sampled_with_replacement": false,
+        "identity_shift_excluded": true,
+        "observed_valid_fold_count": 5,
+        "accepted_rotation_valid_fold_counts": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "candidate_valid_fold_count_histogram": {
+          "4": 12,
+          "5": 113
+        },
+        "n_candidate_shifts_evaluated": 125,
+        "n_rejected_for_fold_count_mismatch": 12,
+        "n_valid_candidates_not_used": 13,
+        "accepted_longitude_shifts_pixels": [
+          336,
+          175,
+          243,
+          372,
+          351,
+          362,
+          294,
+          65,
+          172,
+          358,
+          370,
+          286,
+          194,
+          323,
+          261,
+          9,
+          380,
+          181,
+          3,
+          116,
+          309,
+          303,
+          328,
+          216,
+          250,
+          1,
+          128,
+          246,
+          132,
+          81,
+          87,
+          211,
+          342,
+          295,
+          271,
+          133,
+          187,
+          148,
+          223,
+          215,
+          166,
+          337,
+          329,
+          141,
+          373,
+          377,
+          145,
+          62,
+          167,
+          322,
+          25,
+          139,
+          27,
+          155,
+          119,
+          59,
+          214,
+          201,
+          218,
+          382,
+          78,
+          20,
+          339,
+          144,
+          239,
+          205,
+          135,
+          289,
+          305,
+          74,
+          153,
+          4,
+          244,
+          352,
+          300,
+          180,
+          108,
+          306,
+          34,
+          97,
+          354,
+          254,
+          212,
+          283,
+          311,
+          28,
+          169,
+          313,
+          381,
+          151,
+          293,
+          149,
+          260,
+          356,
+          101,
+          332,
+          242,
+          346,
+          285,
+          345
+        ],
+        "accepted_rotation_prevalence": {
+          "min": 0.007686320295777389,
+          "mean": 0.014274177855613935,
+          "max": 0.02276707530647986
+        },
+        "accepted_rotation_rows": {
+          "min": 20556,
+          "max": 20556
+        },
+        "Null_Mean_PR_AUC": 0.03197020246622187,
+        "Null_Std_PR_AUC": 0.02672840763633233,
+        "Null_95th_PR_AUC": 0.10683156558832459,
+        "Observed_PR_AUC": 0.1105789749883233,
+        "statistic_label": "mean PR-AUC across the observed number of evaluable spatial folds",
+        "features": [
+          "dist_to_antipode_km"
+        ],
+        "Empirical_p_value": 0.039603960396039604
+      },
+      "recovered_above_own_spatial_null": true,
+      "interpretation": "The benchmark clears its separately calibrated spatial null."
+    }
+  },
+  "Power_Analysis": {
+    "schema_version": "1.0",
+    "analysis": "positive_control_spatial_injection_recovery_power",
+    "control": "h2_antipode",
+    "estimand": {
+      "strength_unit": "standard deviations of latent magnetic nuisance field added per one-SD increase in the fixed control score",
+      "binary_target": "mag_binary_5nT",
+      "fixed_prevalence": 0.013913212687293248,
+      "with_control_features": [
+        "tio2",
+        "tio2_25km",
+        "tio2_50km",
+        "tio2_100km",
+        "gravity",
+        "interaction_25km",
+        "interaction_50km",
+        "interaction_100km",
+        "dist_to_antipode_km",
+        "dist_to_basin_rim_km",
+        "crustal_thickness",
+        "abs_latitude",
+        "nearside"
+      ],
+      "ablated_features": [
+        "tio2",
+        "tio2_25km",
+        "tio2_50km",
+        "tio2_100km",
+        "gravity",
+        "interaction_25km",
+        "interaction_50km",
+        "interaction_100km",
+        "dist_to_basin_rim_km",
+        "crustal_thickness",
+        "abs_latitude",
+        "nearside"
+      ]
+    },
+    "design": {
+      "age_mask": "imbrian",
+      "n_simulations_per_strength": 30,
+      "strengths": [
+        0.0,
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        3.0,
+        4.0
+      ],
+      "noise": {
+        "method": "phase_randomized_log1p_observed_continuous_magnetic_field",
+        "simulations_exchangeable": true,
+        "preserves": "two-dimensional amplitude spectrum of log1p(observed magnetic field) approximately, after missing-cell fill"
+      },
+      "estimator": "xgboost",
+      "n_outer_folds": 5,
+      "primary_block_size_deg": 30.0,
+      "adequacy_block_size_deg": 60.0,
+      "alpha": 0.05,
+      "target_power": 0.8,
+      "target_effect_strength": null,
+      "simulation_seed": 42,
+      "model_seed": 42,
+      "primary_detection_rule": "paired one-sided with-control > ablated PR-AUC at alpha, with positive mean drop",
+      "spatially_robust_rule": "primary detection and positive mean ablation drop at the largest block"
+    },
+    "structural_diagnostics": {
+      "nominal_pixel_count": 20556,
+      "observed_positive_pixel_count": 286,
+      "observed_prevalence": 0.013913212687293248,
+      "observed_positive_primary_blocks": 15,
+      "variogram_range_km": 3751.6592824404174,
+      "variogram_range_estimable": true,
+      "approx_effective_independent_regions": 1.0,
+      "effective_region_estimate_is_diagnostic_not_exact": true,
+      "primary_block_smaller_than_variogram_range": true,
+      "structurally_limited": true,
+      "cv_block_summaries": {
+        "30deg": {
+          "block_size_deg": 30.0,
+          "approx_block_size_km": 909.7005127244845,
+          "n_geometric_blocks": 72,
+          "positive_blocks_observed_target": 15,
+          "block_to_variogram_range_ratio": 0.24247951219406397,
+          "observed_target_fold_audit": {
+            "requested_folds": 5,
+            "actual_folds": 5,
+            "valid_pr_auc_folds": 5,
+            "test_positive_counts": [
+              20,
+              96,
+              75,
+              15,
+              80
+            ],
+            "test_positive_block_counts": [
+              3,
+              4,
+              3,
+              1,
+              4
+            ],
+            "best_case_one_sided_p_resolution": 0.03125,
+            "groups_disjoint_in_every_split": true
+          }
+        },
+        "60deg": {
+          "block_size_deg": 60.0,
+          "approx_block_size_km": 1819.401025448969,
+          "n_geometric_blocks": 18,
+          "positive_blocks_observed_target": 8,
+          "block_to_variogram_range_ratio": 0.48495902438812794,
+          "observed_target_fold_audit": {
+            "requested_folds": 5,
+            "actual_folds": 5,
+            "valid_pr_auc_folds": 5,
+            "test_positive_counts": [
+              16,
+              97,
+              96,
+              65,
+              12
+            ],
+            "test_positive_block_counts": [
+              2,
+              2,
+              2,
+              1,
+              1
+            ],
+            "best_case_one_sided_p_resolution": 0.03125,
+            "groups_disjoint_in_every_split": true
+          }
+        }
+      },
+      "distinction": "Geometric CV blocks are non-overlapping holdouts, but they are not automatically independent observations. The variogram-area estimate describes effective information."
+    },
+    "power_curve": [
+      {
+        "strength": 0.0,
+        "n_simulations": 30,
+        "primary_detection_count": 4,
+        "primary_detection_probability": 0.13333333333333333,
+        "primary_detection_wilson_95": [
+          0.053096554840547455,
+          0.296813266820363
+        ],
+        "spatially_robust_detection_count": 3,
+        "spatially_robust_detection_probability": 0.1,
+        "spatially_robust_detection_wilson_95": [
+          0.03459988874733419,
+          0.25621082579184085
+        ],
+        "mean_primary_with_control_pr_auc": 0.13492699625361027,
+        "mean_primary_without_control_pr_auc": 0.10466135171743736,
+        "mean_primary_pr_auc_drop": 0.030265644536172923,
+        "mean_adequacy_block_pr_auc_drop": 0.021489000778237836,
+        "median_positive_spatial_blocks": 19.0,
+        "median_top_minus_bottom_risk": 0.007589025102159953,
+        "median_top_vs_bottom_corrected_odds_ratio": 2.6499838531670434
+      },
+      {
+        "strength": 0.5,
+        "n_simulations": 30,
+        "primary_detection_count": 18,
+        "primary_detection_probability": 0.6,
+        "primary_detection_wilson_95": [
+          0.42320360253322475,
+          0.7540937188319815
+        ],
+        "spatially_robust_detection_count": 18,
+        "spatially_robust_detection_probability": 0.6,
+        "spatially_robust_detection_wilson_95": [
+          0.42320360253322475,
+          0.7540937188319815
+        ],
+        "mean_primary_with_control_pr_auc": 0.4808641725263011,
+        "mean_primary_without_control_pr_auc": 0.2902005024432892,
+        "mean_primary_pr_auc_drop": 0.19066367008301174,
+        "mean_adequacy_block_pr_auc_drop": 0.1962192915081387,
+        "median_positive_spatial_blocks": 14.0,
+        "median_top_minus_bottom_risk": 0.05185833819809302,
+        "median_top_vs_bottom_corrected_odds_ratio": 550.9809818470343
+      },
+      {
+        "strength": 1.0,
+        "n_simulations": 30,
+        "primary_detection_count": 27,
+        "primary_detection_probability": 0.9,
+        "primary_detection_wilson_95": [
+          0.7437891742081593,
+          0.9654001112526658
+        ],
+        "spatially_robust_detection_count": 27,
+        "spatially_robust_detection_probability": 0.9,
+        "spatially_robust_detection_wilson_95": [
+          0.7437891742081593,
+          0.9654001112526658
+        ],
+        "mean_primary_with_control_pr_auc": 0.7908104142358783,
+        "mean_primary_without_control_pr_auc": 0.3642661599624038,
+        "mean_primary_pr_auc_drop": 0.42654425427347464,
+        "mean_adequacy_block_pr_auc_drop": 0.46621335463724767,
+        "median_positive_spatial_blocks": 10.0,
+        "median_top_minus_bottom_risk": 0.05565285074917299,
+        "median_top_vs_bottom_corrected_odds_ratio": 606.7649119192336
+      },
+      {
+        "strength": 1.5,
+        "n_simulations": 30,
+        "primary_detection_count": 28,
+        "primary_detection_probability": 0.9333333333333333,
+        "primary_detection_wilson_95": [
+          0.7867654163738308,
+          0.9815229762087295
+        ],
+        "spatially_robust_detection_count": 28,
+        "spatially_robust_detection_probability": 0.9333333333333333,
+        "spatially_robust_detection_wilson_95": [
+          0.7867654163738308,
+          0.9815229762087295
+        ],
+        "mean_primary_with_control_pr_auc": 0.8873513197832317,
+        "mean_primary_without_control_pr_auc": 0.3842419154982912,
+        "mean_primary_pr_auc_drop": 0.5031094042849406,
+        "mean_adequacy_block_pr_auc_drop": 0.5557932100618702,
+        "median_positive_spatial_blocks": 10.0,
+        "median_top_minus_bottom_risk": 0.05565285074917299,
+        "median_top_vs_bottom_corrected_odds_ratio": 606.7649119192336
+      },
+      {
+        "strength": 2.0,
+        "n_simulations": 30,
+        "primary_detection_count": 29,
+        "primary_detection_probability": 0.9666666666666667,
+        "primary_detection_wilson_95": [
+          0.8332960900859082,
+          0.9940914096183874
+        ],
+        "spatially_robust_detection_count": 29,
+        "spatially_robust_detection_probability": 0.9666666666666667,
+        "spatially_robust_detection_wilson_95": [
+          0.8332960900859082,
+          0.9940914096183874
+        ],
+        "mean_primary_with_control_pr_auc": 0.9129958928770585,
+        "mean_primary_without_control_pr_auc": 0.3965398193325859,
+        "mean_primary_pr_auc_drop": 0.5164560735444725,
+        "mean_adequacy_block_pr_auc_drop": 0.5915296118457323,
+        "median_positive_spatial_blocks": 10.0,
+        "median_top_minus_bottom_risk": 0.05565285074917299,
+        "median_top_vs_bottom_corrected_odds_ratio": 606.7649119192336
+      },
+      {
+        "strength": 3.0,
+        "n_simulations": 30,
+        "primary_detection_count": 30,
+        "primary_detection_probability": 1.0,
+        "primary_detection_wilson_95": [
+          0.8864866068260312,
+          0.9999999999999999
+        ],
+        "spatially_robust_detection_count": 30,
+        "spatially_robust_detection_probability": 1.0,
+        "spatially_robust_detection_wilson_95": [
+          0.8864866068260312,
+          0.9999999999999999
+        ],
+        "mean_primary_with_control_pr_auc": 0.9493814847900136,
+        "mean_primary_without_control_pr_auc": 0.41777015294372766,
+        "mean_primary_pr_auc_drop": 0.5316113318462861,
+        "mean_adequacy_block_pr_auc_drop": 0.6142885564076219,
+        "median_positive_spatial_blocks": 10.0,
+        "median_top_minus_bottom_risk": 0.05565285074917299,
+        "median_top_vs_bottom_corrected_odds_ratio": 606.7649119192336
+      },
+      {
+        "strength": 4.0,
+        "n_simulations": 30,
+        "primary_detection_count": 30,
+        "primary_detection_probability": 1.0,
+        "primary_detection_wilson_95": [
+          0.8864866068260312,
+          0.9999999999999999
+        ],
+        "spatially_robust_detection_count": 30,
+        "spatially_robust_detection_probability": 1.0,
+        "spatially_robust_detection_wilson_95": [
+          0.8864866068260312,
+          0.9999999999999999
+        ],
+        "mean_primary_with_control_pr_auc": 0.965023252743433,
+        "mean_primary_without_control_pr_auc": 0.41696296773016134,
+        "mean_primary_pr_auc_drop": 0.5480602850132716,
+        "mean_adequacy_block_pr_auc_drop": 0.6254373602126424,
+        "median_positive_spatial_blocks": 10.0,
+        "median_top_minus_bottom_risk": 0.05565285074917299,
+        "median_top_vs_bottom_corrected_odds_ratio": 606.7649119192336
+      }
+    ],
+    "minimum_detectable_effect": {
+      "status": "reached_on_tested_grid",
+      "target_power": 0.8,
+      "point_estimate_strength": 1.0,
+      "tested_grid_bracket": [
+        0.5,
+        1.0
+      ],
+      "power_at_point_estimate": 0.9,
+      "wilson_95_at_point_estimate": [
+        0.7437891742081593,
+        0.9654001112526658
+      ],
+      "conservative_95pct_strength": 2.0,
+      "median_top_minus_bottom_risk_at_point": 0.05565285074917299,
+      "median_top_vs_bottom_corrected_odds_ratio_at_point": 606.7649119192336,
+      "interpretation": "First tested coefficient reaching the target; no between-grid interpolation was used."
+    },
+    "Detection_Power": {
+      "adequate_power": false,
+      "power_at_target_effect": null,
+      "power_at_target_effect_wilson_95": null,
+      "target_effect_strength": null,
+      "positive_control_recovered": true,
+      "qualification": "Recovery means at least one tested injected strength reached point-estimate target power; adequacy additionally requires a declared target effect, its lower confidence bound, and sufficient effective spatial information."
+    },
+    "limitations": [
+      "Injection recovery validates sensitivity to the encoded spatial feature; it does not prove the real association exists.",
+      "Strength is a standardised latent coefficient, not a lunar-physics parameter or an odds ratio.",
+      "The result is conditional on this map, mask, prevalence, feature support, model, and fold geometry.",
+      "The tested-grid MDE is not interpolated; Monte Carlo uncertainty is reported with every power estimate.",
+      "Phase surrogates preserve the observed spectrum approximately after filling unmapped cells; rotation surrogates are dependent placements.",
+      "This direct control-ablation power is not power for every conjunctive H1 publication criterion (permutation and SHAP ranking are not resimulated).",
+      "Non-overlapping CV blocks prevent row leakage but cannot create independent lunar regions when the correlation range exceeds the blocks."
+    ]
+  },
+  "Detection_Power": {
+    "adequate_power": false,
+    "power_at_target_effect": null,
+    "power_at_target_effect_wilson_95": null,
+    "target_effect_strength": null,
+    "positive_control_recovered": true,
+    "qualification": "Recovery means at least one tested injected strength reached point-estimate target power; adequacy additionally requires a declared target effect, its lower confidence bound, and sufficient effective spatial information.",
+    "injected_signal_recovered_on_tested_grid": true,
+    "observed_h2_benchmark_recovered": true,
+    "minimum_detectable_effect": {
+      "status": "reached_on_tested_grid",
+      "target_power": 0.8,
+      "point_estimate_strength": 1.0,
+      "tested_grid_bracket": [
+        0.5,
+        1.0
+      ],
+      "power_at_point_estimate": 0.9,
+      "wilson_95_at_point_estimate": [
+        0.7437891742081593,
+        0.9654001112526658
+      ],
+      "conservative_95pct_strength": 2.0,
+      "median_top_minus_bottom_risk_at_point": 0.05565285074917299,
+      "median_top_vs_bottom_corrected_odds_ratio_at_point": 606.7649119192336,
+      "interpretation": "First tested coefficient reaching the target; no between-grid interpolation was used."
+    },
+    "interpretation": "The injected curve quantifies a design-conditional detection floor. No externally justified target effect was declared, and the observed impact-antipode benchmark must also clear its own spatial null."
+  },
+  "SHAP": {
+    "h1_tio2_family_importance": 0.47917118668556213,
+    "best_h1_feature": "tio2_100km",
+    "best_h1_importance": 0.22104604542255402,
+    "antipode_importance": 0.9897758960723877,
+    "exploratory_interaction_family_importance": 0.38584601879119873,
+    "h1_outranks_antipode": false,
+    "importance_ranking": {
+      "abs_latitude": 1.2647831439971924,
+      "dist_to_antipode_km": 0.9897758960723877,
+      "nearside": 0.9367976784706116,
+      "dist_to_basin_rim_km": 0.7221652269363403,
+      "gravity": 0.2925609052181244,
+      "tio2_100km": 0.22104604542255402,
+      "interaction_100km": 0.22075273096561432,
+      "tio2_50km": 0.2142839878797531,
+      "interaction_25km": 0.10681881755590439,
+      "interaction_50km": 0.08535092324018478,
+      "crustal_thickness": 0.07368896156549454,
+      "tio2": 0.06876953691244125,
+      "tio2_25km": 0.011636417359113693
+    }
+  },
+  "Criteria": {
+    "criterion_i_beats_null_and_baselines": false,
+    "criterion_ii_h1_tio2_outranks_antipode": false,
+    "criterion_iii_h1_ablation_significant": false,
+    "spatial_adequacy_support_survives_largest_block": false,
+    "reported_full_ge_logreg": true
+  },
+  "Inference_Status": "INCONCLUSIVE_LOW_POWER",
+  "Surface_Proxy_Supported": false,
+  "H1_Supported": false,
+  "Falsifiability_Guards": {
+    "repository_plan_primary_cell": "imbrian / 5nT",
+    "repository_plan_primary_supported": false,
+    "repository_plan_criteria_met_before_spatial_gate": false,
+    "spatial_adequacy_required_for_a_positive": true,
+    "spatial_adequacy_passed": false,
+    "support_survives_largest_partition": false,
+    "negative_result_may_be_underpowered": true,
+    "adequate_detection_power_demonstrated": false,
+    "observed_h2_benchmark_recovered": true,
+    "sensitivity_shows_partial_signal": false,
+    "subset_signal_is_hypothesis_generating_not_confirmation": false
+  },
+  "Spatial_Diagnostics": {
+    "variogram_range_km": 3751.6592824404174,
+    "cv_block_size_km": 909.7005127244845,
+    "block_to_range_ratio": 0.24247951219406397,
+    "block_exceeds_range": false,
+    "approx_effective_sample_size": 1.0,
+    "n_pixels": 20556,
+    "block_bootstrap_pr_auc": {
+      "PR_AUC_point": 0.053678338978265364,
+      "PR_AUC_CI_low": 0.012672124756806243,
+      "PR_AUC_CI_high": 0.130950147549533,
+      "n_blocks": 72,
+      "n_boot": 1000,
+      "interval_valid_for_inference": false,
+      "limitation": "Conditional block-resampling interval only; selected blocks are smaller than the estimated spatial range and/or too few effective regions exist."
+    },
+    "phase_randomization_null": {
+      "n_surrogates": 50,
+      "Null_Mean_PR_AUC": 0.11961880129141762,
+      "Null_95th_PR_AUC": 0.2098026134624022,
+      "Empirical_p_value": 0.6862745098039216
+    },
+    "block_size_robustness": {
+      "15deg": {
+        "n_blocks": 236,
+        "XGB_Full_PR_AUC": 0.1859058779883334,
+        "H2_Only_PR_AUC": 0.06838583275187105,
+        "H1_tio2_drop_mean": 0.011167642779605533,
+        "beats_h2_and_h1_helps": true
+      },
+      "20deg": {
+        "n_blocks": 151,
+        "XGB_Full_PR_AUC": 0.13863523226849211,
+        "H2_Only_PR_AUC": 0.13140771460632408,
+        "H1_tio2_drop_mean": -0.03563051586241551,
+        "beats_h2_and_h1_helps": false
+      },
+      "30deg": {
+        "n_blocks": 72,
+        "XGB_Full_PR_AUC": 0.08897202056536738,
+        "H2_Only_PR_AUC": 0.1105789749883233,
+        "H1_tio2_drop_mean": -0.002991813736721874,
+        "beats_h2_and_h1_helps": false
+      },
+      "45deg": {
+        "n_blocks": 32,
+        "XGB_Full_PR_AUC": 0.04863825585537545,
+        "H2_Only_PR_AUC": 0.08529676573458642,
+        "H1_tio2_drop_mean": 0.002404690858097059,
+        "beats_h2_and_h1_helps": false
+      },
+      "60deg": {
+        "n_blocks": 18,
+        "XGB_Full_PR_AUC": 0.0835563128069879,
+        "H2_Only_PR_AUC": 0.13287552250658047,
+        "H1_tio2_drop_mean": 0.021126073798143317,
+        "beats_h2_and_h1_helps": false
+      }
+    },
+    "block_size_interpretation": "Non-monotone partition sensitivity; block size is not treated as a one-dimensional leakage meter.",
+    "support_survives_largest_partition": false,
+    "spatially_adequate": false
+  },
+  "Sensitivity": {
+    "imbrian": {
+      "5nT": {
+        "prevalence": 0.013913212687293248,
+        "n_pixels": 20556,
+        "XGB_Full_PR_AUC": 0.08897202056536738,
+        "No_H1_TiO2_PR_AUC": 0.09196383430208926,
+        "H2_Only_PR_AUC": 0.1105789749883233,
+        "H1_tio2_drop_mean": -0.002991813736721874,
+        "Wilcoxon_p": 0.78125,
+        "beats_h2_only": false,
+        "ablation_significant": false,
+        "Wilcoxon_p_fdr": 1.0,
+        "significant_after_fdr": false
+      },
+      "10nT": {
+        "prevalence": 0.0020431990659661413,
+        "n_pixels": 20556,
+        "XGB_Full_PR_AUC": 0.0043559860653175665,
+        "No_H1_TiO2_PR_AUC": 0.005911214573780035,
+        "H2_Only_PR_AUC": 0.027337938003852473,
+        "H1_tio2_drop_mean": -0.0015552285084624697,
+        "Wilcoxon_p": 0.5625,
+        "beats_h2_only": false,
+        "ablation_significant": false,
+        "Wilcoxon_p_fdr": 1.0,
+        "significant_after_fdr": false
+      }
+    },
+    "imbrian_nectarian": {
+      "5nT": {
+        "prevalence": 0.013508891928864569,
+        "n_pixels": 35088,
+        "XGB_Full_PR_AUC": 0.08509523545277482,
+        "No_H1_TiO2_PR_AUC": 0.0633798841644928,
+        "H2_Only_PR_AUC": 0.11122920500188267,
+        "H1_tio2_drop_mean": 0.021715351288282028,
+        "Wilcoxon_p": 0.15625,
+        "beats_h2_only": false,
+        "ablation_significant": false,
+        "Wilcoxon_p_fdr": 0.9375,
+        "significant_after_fdr": false
+      },
+      "10nT": {
+        "prevalence": 0.0013679890560875513,
+        "n_pixels": 35088,
+        "XGB_Full_PR_AUC": 0.0018621906311761176,
+        "No_H1_TiO2_PR_AUC": 0.002522453748528401,
+        "H2_Only_PR_AUC": 0.013985874747214612,
+        "H1_tio2_drop_mean": -0.0006602631173522837,
+        "Wilcoxon_p": 1.0,
+        "beats_h2_only": false,
+        "ablation_significant": false,
+        "Wilcoxon_p_fdr": 1.0,
+        "significant_after_fdr": false
+      }
+    },
+    "none": {
+      "5nT": {
+        "prevalence": 0.01331267959770115,
+        "n_pixels": 44544,
+        "XGB_Full_PR_AUC": 0.08931186541185918,
+        "No_H1_TiO2_PR_AUC": 0.09401980421723324,
+        "H2_Only_PR_AUC": 0.10227140047765851,
+        "H1_tio2_drop_mean": -0.0047079388053740704,
+        "Wilcoxon_p": 0.6875,
+        "beats_h2_only": false,
+        "ablation_significant": false,
+        "Wilcoxon_p_fdr": 1.0,
+        "significant_after_fdr": false
+      },
+      "10nT": {
+        "prevalence": 0.001257183908045977,
+        "n_pixels": 44544,
+        "XGB_Full_PR_AUC": 0.0020360124223610665,
+        "No_H1_TiO2_PR_AUC": 0.002966905146792835,
+        "H2_Only_PR_AUC": 0.019683017535131877,
+        "H1_tio2_drop_mean": -0.0009308927244317684,
+        "Wilcoxon_p": 0.875,
+        "beats_h2_only": false,
+        "ablation_significant": false,
+        "Wilcoxon_p_fdr": 1.0,
+        "significant_after_fdr": false
+      }
+    }
+  }
+}
