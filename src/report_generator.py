@@ -82,6 +82,14 @@ def generate_pdf_report(metrics_path: str, figures_dir: str, output_pdf: str) ->
     _line(pdf, "Spatial Co-location Analysis - Results", size=13, style="B")
     pdf.ln(3)
 
+    pdf.set_font("helvetica", "I", 10)
+    pdf.multi_cell(0, 5, "DISCLAIMER: AI-ASSISTED LEARNING PROJECT\n"
+                         "This is an educational project created for learning and experience. "
+                         "Large Language Models (AI) were used extensively to aid in completing, "
+                         "writing, and architecting this analysis pipeline and its documentation.")
+    pdf.ln(3)
+    pdf.set_font("helvetica", "", 10)
+
     cfg = m.get("config", {})
     _para(pdf,
           "This report analyses whether a present-day surface TiO2 retrieval spatially "

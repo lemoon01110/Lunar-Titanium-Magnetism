@@ -1,6 +1,11 @@
 # Present-Day Surface TiO₂ and Lunar Crustal Magnetic Anomalies
 
+> [!IMPORTANT]
+> **DISCLAIMER: AI-ASSISTED LEARNING PROJECT**
+> This repository is an educational project created for learning and experience. The code, documentation, and scientific analysis pipelines were developed with the extensive assistance of Large Language Models (AI). While rigorous testing (including falsifiability guards and spatial validation) has been implemented to ensure mathematical integrity, the text and framing should be read with the understanding that AI tools were used to aid in drafting and architecting this repository.
+
 *An underpowered test of spatial co-location, not a temporal test of the intermittent-dynamo mechanism*
+
 
 This repository asks a deliberately narrow observational question: **does present-day,
 remotely sensed surface TiO₂ spatially co-locate with a thresholded map of lunar crustal
