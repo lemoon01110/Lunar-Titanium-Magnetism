@@ -21,6 +21,42 @@ ages nor source-depth compositions. Its TiO₂ input is a present-day optical su
 so a failure to find map co-location cannot refute, confirm, or locate the intermittent
 dynamo.
 
+## What this does and doesn't show
+
+> [!NOTE]
+> **Two different questions — keep them apart.**
+>
+> **The mechanism (untouched).** Nichols et al. (2026) propose a *temporal* physics story:
+> sinking Ti-rich cumulates perturb the core and drive short dynamo episodes. This project
+> has no magnetization ages or paleointensities, so it **cannot test, confirm, or refute
+> that mechanism.** It could be entirely correct.
+>
+> **The mappability (what we actually tested).** A separate, narrower question: can
+> present-day *orbital surface* TiO₂ act as a **global map proxy** — predicting *where*
+> crustal anomalies sit — at ~30 km (1°) resolution? On the best current global datasets,
+> this pipeline found **no usable predictive signal**.
+>
+> **What that failure does *not* establish.** It is **not** a proof that the two are
+> physically decoupled, nor that surface TiO₂ can never serve as a proxy. The pipeline's own
+> injection test recovers even a *strong* planted TiO₂ signal only ~40% of the time (target
+> 80%), and the effective number of independent spatial regions is ≈1. With that little
+> power, **failure to detect is not evidence of absence** — which is exactly why the status
+> is `INCONCLUSIVE_LOW_POWER`, not "disproven".
+>
+> **Why a genuine coupling could still be invisible here** (candidate explanations for the
+> null — this data cannot adjudicate between them):
+> - **Scale / ecological inference** — a micro-scale, grain-level signature can wash out when
+>   aggregated into 30 km pixels.
+> - **Impact demagnetization** — eons of impacts can shock-erase the magnetic record while
+>   leaving the titanium in place.
+> - **Downward-continuation / resolution blur** — the surface magnetic field is a
+>   reconstructed product near its ~30 km useful-resolution floor, which can smear alignment
+>   with sharp compositional boundaries.
+>
+> **One honest line:** *this does not falsify the Nichols dynamo; it shows that present-day
+> orbital surface titanium is not a usable global map-proxy in current data, and it
+> quantifies that current global data lack the power to settle the question either way.*
+
 The science path uses provenance-validated institutional products. Synthetic data remain
 available as an isolated software-validation harness and can never silently satisfy a
 real-data run.

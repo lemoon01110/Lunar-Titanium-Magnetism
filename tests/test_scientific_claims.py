@@ -287,3 +287,21 @@ def test_learning_project_and_llm_disclosure_is_prominent():
     paper = _read("Paper-and-Pitch/Research-Paper.typ")
     assert re.search(r"\blearning project\b", paper, re.I)
     assert re.search(r"\bLLM", paper)
+
+
+def test_mechanism_vs_mappability_distinction_is_prominent():
+    """The author's framing must stay honest and visible: separate 'we did not
+    test the temporal mechanism' from 'we found no usable surface map-proxy', and
+    never sell the underpowered null as a disproof of physical decoupling."""
+    readme = _read("README.md")
+    assert "What this does and doesn't show" in readme
+    assert re.search(r"failure to detect is not evidence of absence", readme, re.I)
+    assert re.search(r"map[- ]?proxy", readme, re.I)
+    # An underpowered null is never a proof of decoupling, in any authoritative doc.
+    for name in ("README.md", "Paper-and-Pitch/Research-Paper.typ",
+                 "Paper-and-Pitch/README.md"):
+        assert "completely decoupled" not in _read(name).lower()
+    # The deck carries the failure-to-detect framing and no longer says 'suggestive'.
+    slides = _pptx_text(ROOT / "Paper-and-Pitch" / "Pitch.pptx", "ppt/slides/")
+    assert "failure-to-detect" in slides
+    assert "suggestive" not in slides.lower()

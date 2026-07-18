@@ -20,6 +20,7 @@ type: software
 authors:
   - given-names: Lemon
     alias: lemoon01110
+    orcid: "https://orcid.org/0009-0004-1710-9018"
 version: "1.0.0"
 date-released: "2026-07-17"
 license: MIT

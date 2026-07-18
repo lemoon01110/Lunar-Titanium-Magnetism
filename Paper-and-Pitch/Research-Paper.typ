@@ -100,6 +100,25 @@ statistically significant and fold-unstable. A
   (Wilson 95% CI 0.246–0.577), so the low-power classification is demonstrated, not asserted.
 ]
 
+#v(4pt)
+#block(fill: tint, inset: 11pt, radius: 6pt, width: 100%, stroke: 0.75pt + cyan)[
+  #text(9.5pt, fill: cyan, weight: "bold")[WHAT THIS DOES AND DOES NOT SHOW]
+  #v(3pt)
+  #set text(9.2pt)
+  #set par(justify: true, leading: 0.5em)
+  *Mechanism (untouched).* Nichols et al. propose a _temporal_ mechanism — sinking Ti-rich
+  cumulates driving short dynamo episodes. With no magnetization ages or paleointensities,
+  this study cannot confirm or refute it; the mechanism may be entirely correct.
+  *Mappability (tested).* A separate, narrower question — whether present-day orbital surface
+  TiO#sub[2] is a usable _global map proxy_ for anomaly location at ~30 km — for which this
+  pipeline finds no usable predictive signal.
+  *Not a disproof.* The injection test recovers even a strong planted TiO#sub[2] signal only
+  ~40% of the time (target 80%) with effective regions ≈1, so failure to detect is not
+  evidence of absence — hence #raw("INCONCLUSIVE_LOW_POWER"), not "decoupled". Scale/ecological
+  inference, impact demagnetization, and downward-continuation resolution blur could each hide
+  a real coupling in these data.
+]
+
 = Scientific scope
 
 Nichols et al. (2026) propose that deep Ti-rich cumulate melting altered core heat flow and
