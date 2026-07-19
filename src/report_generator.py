@@ -78,17 +78,40 @@ def generate_pdf_report(metrics_path: str, figures_dir: str, output_pdf: str) ->
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
 
-    _line(pdf, "Surface TiO2 and Lunar Crustal Magnetism", size=17, style="B")
-    _line(pdf, "Spatial Co-location Analysis - Results", size=13, style="B")
-    pdf.ln(3)
+    # Blue Title Header
+    pdf.set_fill_color(41, 128, 185) # Professional Blue
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("helvetica", "B", 18)
+    pdf.cell(0, 12, text="Surface TiO2 and Lunar Crustal Magnetism", border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C", fill=True)
+    
+    pdf.set_fill_color(240, 240, 240)
+    pdf.set_text_color(50, 50, 50)
+    pdf.set_font("helvetica", "B", 13)
+    pdf.cell(0, 8, text="Spatial Co-location Analysis - Results", border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C", fill=True)
+    pdf.ln(5)
 
+    # Disclaimer Box (Red Border, Light Red Fill)
+    pdf.set_fill_color(253, 237, 236)
+    pdf.set_draw_color(231, 76, 60)
+    pdf.set_line_width(0.5)
+    
+    # Title of disclaimer
+    pdf.set_font("helvetica", "B", 11)
+    pdf.set_text_color(192, 57, 43)
+    pdf.cell(0, 6, "EDUCATIONAL & AI-ASSISTED PROJECT", border="LTR", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C", fill=True)
+    
+    # Body of disclaimer
     pdf.set_font("helvetica", "I", 10)
-    pdf.multi_cell(0, 5, "EDUCATIONAL & AI-ASSISTED PROJECT\n"
-                         "This is a personal project created for learning and hands-on experience. "
+    pdf.set_text_color(0, 0, 0)
+    pdf.multi_cell(0, 5, "This is a personal project created for learning and hands-on experience. "
                          "Artificial Intelligence (Large Language Models) was used extensively "
                          "throughout its development to help write the code, understand the geophysical "
-                         "concepts, and rigorously catch statistical and logical errors.")
-    pdf.ln(3)
+                         "concepts, and rigorously catch statistical and logical errors.", 
+                   border="LBR", align="C", fill=True)
+    pdf.set_line_width(0.2)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.ln(5)
+    pdf.set_text_color(0, 0, 0)
     pdf.set_font("helvetica", "", 10)
 
     cfg = m.get("config", {})
