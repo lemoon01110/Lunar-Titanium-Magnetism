@@ -1,18 +1,18 @@
-# Post-hoc Exploratory Diagnostics — Not an Inferential Robustness Test
+# Post-hoc Exploratory Diagnostics: Not an Inferential Robustness Test
 
 This work was designed and run after the repository-plan outcome was known. It is a record of
 implementation experiments, not evidence that a negative result "survives" alternatives.
 The current primary status is **`INCONCLUSIVE_LOW_POWER`**.
 
-Reproduce the descriptive outputs with `python -m src.exploratory`; raw values are in
+Reproduce the descriptive outputs with `python -m src.exploratory`. Raw values are in
 [`exploratory_robustness.csv`](exploratory_robustness.csv).
 
 ## What was tried
 
 | Post-hoc path | Descriptive score | What can be concluded |
 |---|---:|---|
-| Optuna TPE, maximum over 60 trials | 0.199 | uncalibrated selected maximum; no inferential comparison |
-| Spherical K-Means folds | 0.033–0.240 across `k` | result is highly fold-partition sensitive |
+| Optuna TPE, maximum over 60 trials | 0.199 | uncalibrated selected maximum, with no inferential comparison |
+| Spherical K-Means folds | 0.033-0.240 across `k` | result is highly fold-partition sensitive |
 | Sobel TiO₂/gravity gradients | 0.087 | this one feature construction did not improve the repository-plan point estimate |
 
 The repository-plan full-model rotation-null 95th percentile is 0.226. It was generated for
@@ -65,9 +65,9 @@ narrower direct-H2-ablation study uses the real mask and spatial structure and r
 fixed recovery curve and tested-grid floor. It recovers only large encoded effects, has no
 physics-justified target effect, and therefore leaves `adequate_power = false`. A separate
 USGS mare-domain sensitivity retains 3,928 pixels across **30 mare blocks
-(15 contain positives)**, with H1+controls / controls ≈ 0.4766 / 0.4213 (drop ≈ 0.0553); fold increments
+(15 contain positives)**, with H1+controls / controls ≈ 0.4766 / 0.4213 (drop ≈ 0.0553). Fold increments
 concentrated in two folds and paired *p* = 0.21875. Report binary and continuous estimands
-separately; neither is statistically significant confirmation.
+separately. Neither is statistically significant confirmation.
 
 These post-hoc experiments therefore do not overturn the repository-plan criteria failure, but
 they also do not convert it into `NOT_SUPPORTED`. The scientifically honest conclusion remains

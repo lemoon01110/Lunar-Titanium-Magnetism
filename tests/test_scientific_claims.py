@@ -349,7 +349,7 @@ def test_learning_project_and_llm_disclosure_is_prominent():
     readme = _read("README.md")
     assert re.search(r"\blearning project\b", readme, re.I)
     assert re.search(r"\bLLMs?\b|large language model", readme)
-    assert re.search(r"not\s+(professional|peer.reviewed)", readme, re.I)
+    assert re.search(r"not\s+(professional|peer\s+reviewed)", readme, re.I)
     assert re.search(r"Jack Wu|lemoon01110", readme)
     paper = _read("Paper-and-Pitch/Research-Paper.typ")
     assert re.search(r"\blearning project\b", paper, re.I)

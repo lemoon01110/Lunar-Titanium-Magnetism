@@ -4,7 +4,7 @@ message: >-
   where relevant, the underlying data products and the mechanism paper that motivates it.
   Full citations are in References.md. Version 1.0.0 is superseded and must not be cited
   or deposited to Zenodo.
-title: >-
+Title: >-
   Surface TiO2 and Lunar Crustal Magnetism: An Underpowered Spatial Co-location Analysis
 abstract: >-
   A spatially blocked analysis of whether present-day LROC WAC surface-TiO2 values
@@ -13,29 +13,28 @@ abstract: >-
   declared jointly available numerical footprint is underpowered: approximate effective
   independent regions are about 6.9, CV blocks exceed the fitted dependence range
   (~403 km), and no physically justified target effect anchors the injection-recovery
-  power curve (H1 power ≈0.467 at the illustrative strength-1.0 anchor; adequate_power
-  false). The impact-antipode benchmark is not recovered against its matched null
+  power curve (H1 power ≈0.467 at the illustrative strength-1.0 anchor, adequate_power false). The impact-antipode benchmark is not recovered against its matched null
   (p≈0.1724). The result is therefore INCONCLUSIVE_LOW_POWER. It does not test the
   temporal/thermal intermittent-dynamo mechanism proposed by Nichols, Wade and
   Stephenson (2026). The repository's analysis plan is an author-declared prospective
   plan whose timing cannot be independently verified (all git history begins after
   results already existed).
-type: software
+Type: software
 authors:
   - family-names: Wu
     given-names: "Juncong Jack"
     alias: lemoon01110
     orcid: "https://orcid.org/0009-0004-1710-9018"
-    # Credit name: Jack Wu (lemoon01110); formerly published as "Lemon"
+    # Credit name: Jack Wu (lemoon01110). Formerly published as "Lemon"
 version: "2.0.0"
 # date-released is set only when an immutable git tag for this version exists.
 # Do not claim a release date before tagging v2.0.0.
-license:
+License:
   - MIT
   - CC-BY-4.0
-# License note: repository code is MIT; paper, slides, figures, and data artifacts are
+# License note: repository code is MIT. Paper, slides, figures, and data artifacts are
 # CC-BY-4.0. CITATION.cff lists both as alternatives per the schema.
-url: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
+Url: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
 repository-code: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
 keywords:
   - lunar crustal magnetism
@@ -49,15 +48,15 @@ keywords:
 references:
   # --- Motivating mechanism and literature benchmark ---
   - type: article
-    scope: "Motivating temporal mechanism; not directly tested by this spatial analysis"
+    scope: "Motivating temporal mechanism. Not directly tested by this spatial analysis"
     authors:
       - family-names: Nichols
         given-names: Claire I. O.
-      - family-names: Wade
+      - Family-names: Wade
         given-names: Jon
       - family-names: Stephenson
         given-names: Simon N.
-    title: "An intermittent dynamo linked to high-titanium volcanism on the Moon"
+    Title: "An intermittent dynamo linked to high-titanium volcanism on the Moon"
     journal: "Nature Geoscience"
     volume: 19
     start: 425
@@ -69,9 +68,9 @@ references:
     authors:
       - family-names: Hood
         given-names: Lon L.
-      - family-names: Artemieva
+      - Family-names: Artemieva
         given-names: Natalia A.
-    title: >-
+    Title: >-
       Antipodal effects of lunar basin-forming impacts: Initial 3D simulations and
       comparisons with observations
     journal: "Icarus"
@@ -86,7 +85,7 @@ references:
     authors:
       - family-names: Narrett
         given-names: Isaac S.
-      - family-names: Oran
+      - Family-names: Oran
         given-names: Rona
       - family-names: Chen
         given-names: Yuxi
@@ -96,9 +95,9 @@ references:
         given-names: Gábor
       - family-names: Mansbach
         given-names: Elias N.
-      - family-names: Weiss
+      - Family-names: Weiss
         given-names: Benjamin P.
-    title: "Impact plasma amplification of the ancient lunar dynamo"
+    Title: "Impact plasma amplification of the ancient lunar dynamo"
     journal: "Science Advances"
     volume: 11
     year: 2025
@@ -131,13 +130,13 @@ references:
     authors:
       - family-names: Wieczorek
         given-names: Mark A.
-    title: "T2015_449 spherical-harmonic expansion of the Tsunakawa et al. 2015 lunar SVM"
+    Title: "T2015_449 spherical-harmonic expansion of the Tsunakawa et al. 2015 lunar SVM"
     year: 2020
     doi: "10.5281/zenodo.3873648"
     notes: >-
       Evaluated at lunar mean radius for the v2.0.0 surface magnetic target.
       Supersedes v1.0.0's JAXA MA_GDOP_001 (30 km altitude grid).
-  - type: article
+  - Type: article
     scope: "Feature article: surface TiO2 abundance (LROC WAC)"
     authors:
       - family-names: Sato
@@ -154,17 +153,17 @@ references:
     authors:
       - family-names: Lemoine
         given-names: Frank G.
-      - family-names: Goossens
+      - Family-names: Goossens
         given-names: Sander
     title: "GRAIL GRGM1200A Bouguer gravity disturbance (degree/order 180)"
     year: 2016
-    notes: "See Lemoine et al. 2014 and Goossens et al. 2016 LPSC 1484; Data-Sources.md"
+    notes: "See Lemoine et al. 2014 and Goossens et al. 2016 LPSC 1484. Data-Sources.md"
   - type: data
     scope: "Control: GRAIL crustal thickness archive"
     authors:
       - family-names: Wieczorek
         given-names: Mark A.
-    title: "The crust of the Moon as seen by GRAIL"
+    Title: "The crust of the Moon as seen by GRAIL"
     journal: "Science"
     volume: 339
     year: 2013
@@ -175,11 +174,11 @@ references:
     authors:
       - family-names: Fortezzo
         given-names: Corey M.
-      - family-names: Spudis
+      - Family-names: Spudis
         given-names: Paul D.
-      - family-names: Harrel
+      - Family-names: Harrel
         given-names: Shannon L.
-    title: >-
+    Title: >-
       Release of the Digital Unified Global Geologic Map of the Moon at 1:5,000,000-Scale
     year: 2020
     notes: "51st Lunar and Planetary Science Conference, Abstract #2760"

@@ -1,9 +1,8 @@
 # Present-Day Surface TiO₂ and Lunar Crustal Magnetic Anomalies
 
 > [!NOTE]
-> **Independent work, openly assisted.** An independent learning project — not peer-reviewed
-> science. Language models (LLMs) assisted with code, drafting, and adversarial review;
-> scientific framing and every claim remain the author’s. Built to be checked: hashes, tests,
+> **Independent work, openly assisted.** An independent learning project, not peer reviewed yet. Language models (LLMs) assisted with code, drafting, and adversarial review.
+> Scientific framing and every claim remain the author’s. Built to be checked: hashes, tests,
 > and a public decision history.
 
 *An underpowered test of spatial co-location, not a temporal test of the intermittent-dynamo mechanism*
@@ -17,12 +16,12 @@ backing every number quoted below is committed at
 [`Paper-and-Pitch/metrics.json`](Paper-and-Pitch/metrics.json).
 
 **Release v2.0.0** uses the surface-evaluated Tsunakawa/Wieczorek magnetic product
-(Wieczorek `T2015_449`; |B| at lunar mean radius), primary threshold **10 nT** (25 nT
-sensitivity), and the LROC WAC TiO₂ **tio2_quantitative** mask (≥2 wt%; cells below the
+(Wieczorek `T2015_449`, |B| at lunar mean radius), primary threshold **10 nT** (25 nT
+sensitivity), and the LROC WAC TiO₂ **tio2_quantitative** mask (≥2 wt%, cells below the
 detection limit are non-quantitative). Binding scores, spatial nulls, ablation, and decision
-criteria use **default-config XGBoost**; nested/tuned XGBoost is **diagnostic only** (and
+criteria use **default-config XGBoost**. Nested/tuned XGBoost is **diagnostic only** (and
 here the tuned PR-AUC is *lower* than default). **v1.0.0 is superseded** and must not be
-cited or deposited — it used JAXA `MA_GDOP_001` (a 30 km *altitude* grid wrongly treated as
+cited or deposited. It used JAXA `MA_GDOP_001` (a 30 km *altitude* grid wrongly treated as
 a surface map) with 5/10 nT cutoffs. Author: Jack Wu
 ([ORCID 0009-0004-1710-9018](https://orcid.org/0009-0004-1710-9018)). The analysis plan is
 an **author-declared** prospective plan whose timing **cannot be independently verified**.
@@ -37,37 +36,37 @@ dynamo.
 ## What this does and doesn't show
 
 > [!NOTE]
-> **Two different questions — keep them apart.**
+> **Two different questions. Keep them apart.**
 >
 > **The mechanism (untouched).** Nichols et al. (2026) propose a *temporal* physics story:
-> radiogenic melting of ilmenite-bearing cumulates at the core–mantle boundary after overturn,
+> radiogenic melting of ilmenite-bearing cumulates at the core-mantle boundary after overturn,
 > increasing core heat flux during short dynamo episodes (not simply continued sinking of
 > Ti-rich material). This project has no magnetization ages or paleointensities, so it
 > **cannot test, confirm, or refute that mechanism.** It could be entirely correct.
 >
 > **The mappability (what we actually tested).** A separate, narrower question: can
-> present-day *orbital surface* TiO₂ act as a **global map proxy** — predicting *where*
-> crustal anomalies sit — at ~30 km (1°) resolution? On the best current global datasets,
+> present-day *orbital surface* TiO₂ act as a **global map proxy**, predicting *where*
+> crustal anomalies sit, at ~30 km (1°) resolution? On the best current global datasets,
 > this pipeline **did not detect incremental predictive value**.
 >
 > **What that failure does *not* establish.** It is **not** a proof that the two are
 > physically decoupled, nor that surface TiO₂ can never serve as a proxy. The pipeline's own
 > injection test recovers even a *strong* planted TiO₂ signal only ~40% of the time (target
 > 80%), and the effective number of independent spatial regions is ≈1. With that little
-> power, **failure to detect is not evidence of absence** — which is exactly why the status
+> power, **failure to detect is not evidence of absence**, which is exactly why the status
 > is `INCONCLUSIVE_LOW_POWER`, not "disproven".
 >
 > **Why a genuine coupling could still be invisible here** (candidate explanations for the
-> null — this data cannot adjudicate between them):
-> - **Scale / ecological inference** — a micro-scale, grain-level signature can wash out when
+> null, which this data cannot adjudicate between):
+> - **Scale / ecological inference.** A micro-scale, grain-level signature can wash out when
 >   aggregated into 30 km pixels.
-> - **Impact demagnetization** — eons of impacts can shock-erase the magnetic record while
+> - **Impact demagnetization.** Eons of impacts can shock-erase the magnetic record while
 >   leaving the titanium in place.
-> - **Downward-continuation / resolution blur** — the surface magnetic field is a
+> - **Downward-continuation / resolution blur.** The surface magnetic field is a
 >   reconstructed product near its ~30 km useful-resolution floor, which can smear alignment
 >   with sharp compositional boundaries.
 >
-> **One honest line:** *this does not falsify the Nichols dynamo; it shows that present-day
+> **One honest line:** *this does not falsify the Nichols dynamo. It shows that present-day
 > orbital surface titanium did not provide a usable global map-proxy in current data, and it
 > quantifies that current global data lack the power to settle the question either way.*
 
@@ -77,16 +76,16 @@ real-data run.
 
 ## About this project
 
-This is an **independent learning project**, not professional or peer-reviewed science. It
+This is an **independent learning project**, not professional science and not peer reviewed yet. It
 exists because the intermittent-dynamo idea in Nichols et al. (2026) is worth testing
-honestly — including pre-registration, spatial statistics, power calibration, and correcting
+honestly, including pre-registration, spatial statistics, power calibration, and correcting
 overclaims in public.
 
 **Large language models (LLMs) assisted** with code, analysis design, documentation, and
 the adversarial reviews behind the dated amendments in
 [`Pre-Registration.md`](Pre-Registration.md). No AI output is treated as scientific
-evidence; every scientific choice and claim remains the author's responsibility. The full
-decision history — including mistakes and their corrections — is preserved in the open.
+evidence. Every scientific choice and claim remains the author's responsibility. The full
+decision history, including mistakes and their corrections, is preserved in the open.
 Criticism and corrections are welcome via issues.
 
 ## Reproduce the real-data analysis
@@ -116,10 +115,10 @@ establish statistical power, independence, construct validity, or causal identif
 
 Outputs are written to:
 
-- `results/metrics.json` — scores, diagnostics, run mode, input hashes, and package versions
-- `results/Research_Paper.pdf` — machine-generated report
-- `results/figures/*.png` — model-description figures
-- `data/processed/modeling_dataset.csv` — aligned equal-area modeling table
+- `results/metrics.json`, scores, diagnostics, run mode, input hashes, and package versions
+- `results/Research_Paper.pdf`, machine-generated report
+- `results/figures/*.png`, model-description figures
+- `data/processed/modeling_dataset.csv`, aligned equal-area modeling table
 
 See `Data-Sources.md` for products, transformations, units, coverage, and scientific
 validity limits.
@@ -127,7 +126,7 @@ validity limits.
 ## Current real-data evidence
 
 Primary scope: Imbrian ∩ `tio2_quantitative` (≥2 wt%), surface |B| ≥ **10 nT**
-(`n_pixels` = 4374; prevalence ≈ 0.0384 ≈ 3.8%). Prevalence is the **expected no-skill /
+(`n_pixels` = 4374. Prevalence ≈ 0.0384 ≈ 3.8%). Prevalence is the **expected no-skill /
 random PR-AUC** for a constant-prior classifier here. Report **binary and continuous**
 estimands separately. The repository-plan H1 criteria all failed on the canonical run, and the experiment
 also fails its adequacy checks:
@@ -153,11 +152,11 @@ also fails its adequacy checks:
 
 `H1_Supported` is `false`. The appropriate evidence classification is
 **`INCONCLUSIVE_LOW_POWER`**, not evidence of absence. Report the **binary** classifier
-estimands and the **continuous** ridge estimands separately — they answer different
-questions; the continuous ΔR² ≈ -0.0146 shows the TiO₂ family does **not** help
-continuously. There are 168 positive pixels (~3.8%), clustered across provinces; pixel count
+estimands and the **continuous** ridge estimands separately, they answer different
+questions. The continuous ΔR² ≈ -0.0146 shows the TiO₂ family does **not** help
+continuously. There are 168 positive pixels (~3.8%), clustered across provinces. Pixel count
 is therefore not an independent sample size. The bundled guard already records
-`negative_result_may_be_underpowered = true`; the amendment makes that limitation binding
+`negative_result_may_be_underpowered = true`. The amendment makes that limitation binding
 rather than a footnote to a negative verdict. The block sweep is also non-monotone (0.537,
 0.377, 0.395, 0.250, 0.377 at 15°, 20°, 30°, 45°, and 60°), so it does not support a clean
 "less leakage strengthens the negative" narrative.
@@ -173,7 +172,7 @@ nulls retain only rotations with the observed four evaluable folds: 383 unique c
 were evaluated, 297 were rejected for fold-count mismatch, and the fold-matched pool
 exhausted at **86** accepted shifts (below the requested 100). Rotated prevalence ranges
 widely where the shifted target intersects the fixed Imbrian mask. Failure to recover H2
-prevents strong negative inference about the surface-TiO₂ proxy; it does not establish H1
+prevents strong negative inference about the surface-TiO₂ proxy. It does not establish H1
 power.
 
 The non-recovery reading is also **fragile** in resolution: with 86 rotations the
@@ -185,7 +184,7 @@ for the observed H2 benchmark (and remains false for the H1 arm).
 ### Which "chance" level applies where
 
 Four different reference levels now appear in this repository. They are not
-interchangeable; quoting a score against the wrong one is the mismatched-null error
+interchangeable. Quoting a score against the wrong one is the mismatched-null error
 corrected in earlier amendments.
 
 | Reference level | Value | Statistic it calibrates |
@@ -193,7 +192,7 @@ corrected in earlier amendments.
 | Expected no-skill / prevalence PR-AUC | 0.0384 | random/constant-prior baseline for this rare target |
 | Matched H2-only rotation null (mean) | 0.155877 | the one-feature H2 benchmark (obs. 0.2718) |
 | Full-model rotation null (mean) | 0.231862 | the 13-feature full model (obs. 0.3949) |
-| Injection design (standalone JSONs) | regenerated for v2 | see Adequacy follow-up; `adequate_power` is false |
+| Injection design (standalone JSONs) | regenerated for v2 | see Adequacy follow-up. `adequate_power` is false |
 
 Note the full model scores *above* its own null mean but does **not** clear *p* < 0.05
 (*p* ≈ 0.1379), and the H2 benchmark (0.2718) sits below its matched null 95th (0.3766).
@@ -211,40 +210,40 @@ argument that leakage inflates scores. That rule addressed only one possible bia
 not address low power. The dated amendment appended to
 `Pre-Registration.md` now reserves `NOT_SUPPORTED` for a criteria-failing run with
 demonstrated adequate detection power. A would-be positive that fails spatial independence
-remains `INCONCLUSIVE_SPATIAL_AUTOCORRELATION`; the present criteria-failing but
+remains `INCONCLUSIVE_SPATIAL_AUTOCORRELATION`. The present criteria-failing but
 underpowered run is `INCONCLUSIVE_LOW_POWER`.
 
 This change is explicitly **post hoc**. It does not rewrite the original commitments and is
 reported so readers can see the full decision-rule history.
 
-Repository development and the amendments used AI coding/writing assistance; the repository
+Repository development and the amendments used AI coding/writing assistance. The repository
 author is responsible for all scientific choices and claims.
 
 ## Measurement and scope limits
 
 - Nichols et al. report a time/composition relation in returned rock samples. This analysis
   compares aggregated map pixels and therefore tests a new spatial proxy, not that mechanism.
-- The LROC WAC TiO₂ algorithm is a mare-regolith retrieval with a **2 wt% detection limit**;
-  below-detection cells are non-quantitative (`tio2_quantitative`). The primary legacy run
+- The LROC WAC TiO₂ algorithm is a mare-regolith retrieval with a **2 wt% detection limit**.
+  Below-detection cells are non-quantitative (`tio2_quantitative`). The primary legacy run
   used the joint-valid / quantitative footprint, not a mare-validity mask. A post-hoc USGS
-  mare-domain sensitivity is reported below (**30 mare blocks; 15 contain positives**).
+  mare-domain sensitivity is reported below (**30 mare blocks, 15 contain positives**).
 - Surface UV/Vis TiO₂ samples the optical regolith, whereas magnetic anomalies can arise from
   older and deeper sources. Present-day spatial mismatch is not temporal evidence.
 - Thresholding surface |B| at **10 nT** (25 nT sensitivity) discards field magnitude and
   yields a rare, clustered target. `src/transparent_analysis.py` implements a descriptive
   blocked ridge comparison on `log1p(|B|)`: controls-only blocked R² is 0.3649 and
   controls+TiO₂ is 0.3503, for fold-mean incremental R² **-0.0146**. Report binary and
-  continuous estimands separately; the continuous result remains descriptive because those
-  folds do not establish independent regions; the analysis emits no row-level p-value and
+  continuous estimands separately. The continuous result remains descriptive because those
+  folds do not establish independent regions. The analysis emits no row-level p-value and
   does not replace the binding headline.
-- H2 geometry is an approximate operationalization and cannot serve as assured exact truth;
-  in v2 it is **not** recovered against its matched null.
+- H2 geometry is an approximate operationalization and cannot serve as assured exact truth.
+  In v2 it is **not** recovered against its matched null.
 
 ## Adequacy follow-up
 
 The follow-ups now have different statuses under the v2.0.0 surface product:
 
-1. **H2 injection-recovery power analysis — completed; `adequate_power` is false.**
+1. **H2 injection-recovery power analysis: completed. `adequate_power` is false.**
    The committed `metrics.json` records `Detection_Power.adequate_power` is false and
    `observed_h2_benchmark_recovered` / `positive_control_recovered` is false. Regenerated
    [`Paper-and-Pitch/positive_control_power_analysis.json`](Paper-and-Pitch/positive_control_power_analysis.json)
@@ -252,34 +251,34 @@ The follow-ups now have different statuses under the v2.0.0 surface product:
    target power on the tested grid. Treat the strength grid as a **low-strength simulation /
    design-sensitivity** probe, not demonstrated realism of lunar physics. See also
    [`h2_antipode_low_strength_extension.json`](Paper-and-Pitch/h2_antipode_low_strength_extension.json).
-2. **H1 (TiO₂-driver) injection curve — regenerated; measured power 0.467 at strength 1.0**
+2. **H1 (TiO₂-driver) injection curve: regenerated. Measured power 0.467 at strength 1.0**
    ([`Paper-and-Pitch/h1_tio2_power_analysis.json`](Paper-and-Pitch/h1_tio2_power_analysis.json)).
    On the v2 surface product the tested-grid 80% point estimate first appears at latent
    strength **2.0**, but `Detection_Power.adequate_power` remains **false** because no
    externally justified target effect anchors the curve and the design stays structurally
-   limited. Low-strength points (≤0.2) stay near zero detection probability — far from a
+   limited. Low-strength points (≤0.2) stay near zero detection probability, far from a
    demonstrated-realism claim.
-3. **Externally sourced mare-terrain mask — descriptive result available.** A post-hoc mask
+3. **Externally sourced mare-terrain mask: descriptive result available.** A post-hoc mask
    derived from USGS Unified Geologic Map GIS v2 `FIRST_Unit` symbols `Em`, `Im1`, `Im2`, and
    `Imd` leaves **3,928** pixels, **30 mare blocks**, and **15** blocks containing positives
    in the Imbrian ∩ quantitative scope. Using raw row-local TiO₂ only (buffers excluded),
    TiO₂+controls scores ≈0.4766 versus ≈0.4213 for controls, a mean drop/increment ≈0.0553.
-   Wilcoxon *p* is unavailable for a significance claim here; the result is **inconclusive**
-   — it is not confirmation and is not presented as evidence.
+   Wilcoxon *p* is unavailable for a significance claim here. The result is **inconclusive**
+, it is not confirmation and is not presented as evidence.
 
 With the regenerated H1 curve, we still anchor interpretation to an **illustrative** effect
 (Amendment A8 in [`Pre-Registration.md`](Pre-Registration.md)): latent strength 1.0. It is
-**not** a physically derived effect size — the Nichols theory does **not** provide a registered
-present-day spatial effect size — and the committed artifact leaves `target_effect_strength`
+**not** a physically derived effect size, the Nichols theory does **not** provide a registered
+present-day spatial effect size, and the committed artifact leaves `target_effect_strength`
 null. Measured H1 power at that anchor is **0.467**, far below the 0.80 requirement.
 `INCONCLUSIVE_LOW_POWER` is therefore **demonstrated rather than asserted**: the registered
 criteria could not reliably fire even for a strong planted TiO₂-driven signal at the
-declared illustrative anchor. Observed-H2 `positive_control_recovered` is false; the H1
+declared illustrative anchor. Observed-H2 `positive_control_recovered` is false. The H1
 injection arm reaches point-estimate 80% only at strength 2.0 and remains at 0.467 at the
 illustrative strength-1.0 anchor, so `adequate_power` is false on *measurement* rather than
 by abstention, and `NOT_SUPPORTED` stays unreachable on evidence. The structural facts
-under v2 include fitted range ≈403 km; 30°/60° blocks ≈910/1,819 km; effective sample size
-≈6.9; and fold-matched null pools exhausted at 86 permutations. The strongest supported
+under v2 include fitted range ≈403 km. 30°/60° blocks ≈910/1,819 km. Effective sample size
+≈6.9, and fold-matched null pools exhausted at 86 permutations. The strongest supported
 headline is therefore: **jointly available numerical coverage within the registered scope
 does not distinguish the tested surface-composition proxy from spatial null structure at the
 registered criteria, and the design has measured, inadequate power (`adequate_power` is false)
@@ -287,7 +286,7 @@ to settle the question.**
 
 ## Synthetic validation harness
 
-Synthetic runs require an explicit mode and live under `data/synthetic/`; they never write
+Synthetic runs require an explicit mode and live under `data/synthetic/`. They never write
 to `data/raw`, `data/processed`, or the real result directory.
 
 ```bash
@@ -310,12 +309,12 @@ control for the effect sizes, spatial support, or measurement error in the real 
 | `--age-mask` | `imbrian` | `imbrian`, `imbrian_nectarian`, or `none` |
 | `--threshold` | `10.0` | binary anomaly threshold in nT (`10.0` or `25.0`) |
 | `--grid-res` | `1.0` | synthetic grid resolution in degrees per pixel |
-| `--regenerate` | off | rebuild isolated synthetic inputs; invalid for real data |
+| `--regenerate` | off | rebuild isolated synthetic inputs. Invalid for real data |
 
 The primary cell is Imbrian/10 nT (25 nT sensitivity). Thresholds, 25/50/100 km buffers, the 600→40 km
 exploratory gravity filter, the basin catalogue, block sizes, and model search spaces are
 analyst choices. Their selection history and forking paths are disclosed in
-`Analysis-Plan.md`; registration does not make them physically unique.
+`Analysis-Plan.md`. Registration does not make them physically unique.
 
 ## Method summary
 
@@ -323,7 +322,7 @@ analyst choices. Their selection history and forking paths are disclosed in
   not used for criteria (tuned PR-AUC can be lower than default, as in this run).
 - Cross-validation holds out groups of 30° × 30° spatial blocks, with nested inner spatial
   folds for tuning. Even when blocks exceed the fitted range, few effective independent
-  regions remain; this design does not establish strong independent folds for the present target.
+  regions remain. This design does not establish strong independent folds for the present target.
 - Longitudinal-rotation and 2-D phase-randomized nulls preserve selected spatial structure.
   The completed H2 injection study reuses the phase spectrum for a direct ablation power
   curve, but does not resimulate tuning, permutation, SHAP, or the full conjunctive H1 rule.
@@ -343,8 +342,8 @@ distributes no third-party data.
   noting that the corrected scope is the spatial co-location question above.
 - **Bibliography:** [`References.md`](References.md).
 - **Data provenance:** [`Data-Sources.md`](Data-Sources.md).
-- **License:** code is [MIT](LICENSE); the paper, slides, figures, and data artifacts
-  (CSV/JSON) are [CC BY 4.0](LICENSE-CC-BY-4.0.txt) — reuse and adaptation are welcome **with
+- **License:** code is [MIT](LICENSE). The paper, slides, figures, and data artifacts
+  (CSV/JSON) are [CC BY 4.0](LICENSE-CC-BY-4.0.txt): reuse and adaptation are welcome **with
   credit to the author**, and the work may not be presented as someone else's. Suggested
   attribution: *"Jack Wu (lemoon01110), Surface TiO2 and Lunar Crustal Magnetism: An
   Underpowered Spatial Co-location Analysis (v2.0.0, 2026),

@@ -22,13 +22,13 @@ independent lunar evidence or uncertainty over spatial partitions.
 - The fitted target range under v2 is ≈403 km versus ≈910 km primary blocks, with
   `approx_effective_sample_size ≈ 1`.
 - Full-model fold SD is ≈0.080 around a mean of 0.089, and alternate partitions range from
-  0.033 to 0.240; partition uncertainty dominates seed variation.
+  0.033 to 0.240. Partition uncertainty dominates seed variation.
 - Rerunning a fixed estimator does not validate the mare-calibrated TiO₂ proxy in highlands.
 - Seed variation does not provide an injection-recovery power curve.
 
 The current CSV labels these rows `NO_INFERENCE`, preventing an arbitrary seed sweep from
 manufacturing a scientific verdict. Earlier snapshots used `NOT_SUPPORTED` under the
-superseded post-result asymmetric rule; that history is documented in
+superseded post-result asymmetric rule. That history is documented in
 [`../Pre-Registration.md`](../Pre-Registration.md). The current primary interpretation is
 **`INCONCLUSIVE_LOW_POWER`** until adequate detection power is demonstrated on the v2
 surface product (metrics TBD). Altitude-product seed tables remain software diagnostics only.

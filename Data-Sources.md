@@ -3,7 +3,7 @@
 The pipeline consumes five canonical 1-degree lunar science grids, a terrain-validity mask
 derived from the external USGS geology product, and an analyst-declared basin catalogue. The
 native institutional products are retained unchanged under
-`data/raw/sources/`; derived analysis inputs live in `data/raw/`. Byte provenance and raster
+`data/raw/sources/`. Derived analysis inputs live in `data/raw/`. Byte provenance and raster
 schema checks establish file identity and computational reproducibility. They do **not**
 establish that a retrieval is scientifically valid in every terrain where it has a numeric
 value.
@@ -37,7 +37,7 @@ Existing files are reused only after they match code-pinned SHA-256 values. `--f
 redownloads a family, verifies the temporary payload, and only then replaces a known-good
 file. Downloads use `.part` files, resume when the server supports ranges, and retry. ZIP
 extraction rejects absolute paths, traversal, symlinks, missing members, and injected
-members; every extracted byte is checked directly against its pinned archive.
+members. Every extracted byte is checked directly against its pinned archive.
 
 `src.ingest all` is intentionally all-or-nothing. It verifies every source byte against
 `source_manifest.json`, converts into a temporary staging directory, validates the entire
@@ -48,33 +48,33 @@ outputs. It never substitutes generated data or silently skips an unavailable so
 
 | Layer | Pinned native product | Conversion to canonical grid | Canonical output |
 |---|---|---|---|
-| Magnetic target | Tsunakawa et al. (2015) surface SVM via Wieczorek `T2015_449` (Zenodo `10.5281/zenodo.3873648`); **supersedes** JAXA `MA_GDOP_001` (30 km altitude grid, not a surface map) | evaluate spherical-harmonic expansion at lunar mean radius; store surface \|B\| | `magnetic_anomaly.tif`, nT |
-| TiO2 (candidate spatial proxy) | LROC WAC TiO2, `LRO-L-LROC-5-RDR-V1.0/LROLRC_2001`, eight IMG/PDS4-label pairs | decode native payloads; normalize longitude seam; mask values outside 0–15 wt.%; area-average | `tio2_abundance.tif`, wt.% |
-| Bouguer gravity | GRAIL GRGM1200A Bouguer disturbance, degree/order 180 GeoTIFF | normalize longitude seam; area-average | `bouguer_gravity.tif`, mGal |
-| Crustal thickness | GRAIL Crustal Thickness Archive v1, `Model1_thick.dat` | parse 0.25-degree grid; drop duplicate 360-degree seam; area-average | `crustal_thickness.tif`, km |
-| Geologic age | USGS Unified Geologic Map of the Moon 1:5M GIS v2, `GeoUnits.shp` | rasterize `FIRST_Un_1`; Imbrian=2, Nectarian and ambiguous Imbrian-Nectarian=1, all others=0 | `geologic_age.tif` |
-| TiO2 terrain validity | same external USGS GIS v2 `GeoUnits.shp` | rasterize exact case-sensitive `FIRST_Unit` symbols `Em`, `Im1`, `Im2`, `Imd` as 1; all other mapped units as 0; nearest-neighbor reprojection | `tio2_mare_validity.tif`, boolean/0–1 |
+| Magnetic target | Tsunakawa et al. (2015) surface SVM via Wieczorek `T2015_449` (Zenodo `10.5281/zenodo.3873648`). **supersedes** JAXA `MA_GDOP_001` (30 km altitude grid, not a surface map) | evaluate spherical-harmonic expansion at lunar mean radius. Store surface \|B\| | `magnetic_anomaly.tif`, nT |
+| TiO2 (candidate spatial proxy) | LROC WAC TiO2, `LRO-L-LROC-5-RDR-V1.0/LROLRC_2001`, eight IMG/PDS4-label pairs | decode native payloads. Normalize longitude seam. Mask values outside 0-15 wt.%. Area-average | `tio2_abundance.tif`, wt.% |
+| Bouguer gravity | GRAIL GRGM1200A Bouguer disturbance, degree/order 180 GeoTIFF | normalize longitude seam. Area-average | `bouguer_gravity.tif`, mGal |
+| Crustal thickness | GRAIL Crustal Thickness Archive v1, `Model1_thick.dat` | parse 0.25-degree grid. Drop duplicate 360-degree seam. Area-average | `crustal_thickness.tif`, km |
+| Geologic age | USGS Unified Geologic Map of the Moon 1:5M GIS v2, `GeoUnits.shp` | rasterize `FIRST_Un_1`. Imbrian=2, Nectarian and ambiguous Imbrian-Nectarian=1, all others=0 | `geologic_age.tif` |
+| TiO2 terrain validity | same external USGS GIS v2 `GeoUnits.shp` | rasterize exact case-sensitive `FIRST_Unit` symbols `Em`, `Im1`, `Im2`, `Imd` as 1. All other mapped units as 0. Nearest-neighbor reprojection | `tio2_mare_validity.tif`, boolean/0-1 |
 | H2 benchmark geometry | six approximate centers/radii declared in `src/basins.py` | `antipode = (wrap(lon + 180), -lat)` | `basins.csv`, `antipodes.csv` |
 
 The chosen crustal-thickness model is the archive's published Model 1: 12% porosity,
 34 km global mean, and 3,220 kg/m3 mantle density. GRAIL gravity and thickness are in a
-Moon Principal-Axes frame; their subpixel PA/ME offset at the 1-degree analysis scale is
+Moon Principal-Axes frame. Their subpixel PA/ME offset at the 1-degree analysis scale is
 recorded in the manifest as a control-layer uncertainty, not silently treated as exact.
 
 ## Sources and citations
 
-- LROC WAC TiO2: NASA PDS/ASU volume `LROLRC_2001`; PDS3 dataset DOI
-  `10.17189/1520341`, PDS4 bundle DOI `10.17189/a6a1-mw73`; Sato et al. (2017),
+- LROC WAC TiO2: NASA PDS/ASU volume `LROLRC_2001`. PDS3 dataset DOI
+  `10.17189/1520341`, PDS4 bundle DOI `10.17189/a6a1-mw73`. Sato et al. (2017),
   *Icarus* 296, DOI `10.1016/j.icarus.2017.06.013`. Native coverage is 70 S to 70 N.
-- GRAIL Bouguer: NASA PDS Geosciences GRGM1200A L=180; Lemoine et al. (2014), DOI
+- GRAIL Bouguer: NASA PDS Geosciences GRGM1200A L=180. Lemoine et al. (2014), DOI
   `10.1002/2014GL060027`, and Goossens et al. (2016), LPSC abstract 1484.
-- GRAIL thickness: archive DOI `10.5281/zenodo.997347`; Wieczorek et al. (2013),
+- GRAIL thickness: archive DOI `10.5281/zenodo.997347`. Wieczorek et al. (2013),
   *Science* 339, DOI `10.1126/science.1231530`.
 - USGS geology: Fortezzo, Spudis, and Harrel (2020), Unified Geologic Map of the Moon,
   GIS v2 dated 2020-03-03, 1:5M.
-- Surface magnetic target: Tsunakawa et al. (2015), DOI `10.1002/2014JE004785`; Wieczorek
+- Surface magnetic target: Tsunakawa et al. (2015), DOI `10.1002/2014JE004785`. Wieczorek
   `T2015_449` SH model, DOI `10.5281/zenodo.3873648`. **v1.0.0** used JAXA `MA_GDOP_001`
-  (30 km altitude) and is superseded — that altitude product must never be described as a
+  (30 km altitude) and is superseded, that altitude product must never be described as a
   surface map.
 - LROC WAC TiO₂ values below the **2 wt% detection limit** are non-quantitative
   (`tio2_quantitative` mask).
@@ -91,12 +91,12 @@ radius 1,737,400 m. Resolution must divide both 180 and 360 exactly.
 
 Validation rejects:
 
-- missing, unreadable, misaligned, multi-band, wrong-dtype, or Earth-CRS grids;
-- insufficient per-layer or common valid coverage;
-- nonfinite/out-of-range physical values and invalid/missing age classes;
-- malformed, duplicate, or out-of-range basin coordinates/radii;
-- antipodes that do not exactly match the mathematical transform;
-- missing, stale, or hash-mismatched source/canonical manifests.
+- missing, unreadable, misaligned, multi-band, wrong-dtype, or Earth-CRS grids.
+- Insufficient per-layer or common valid coverage.
+- Nonfinite/out-of-range physical values and invalid/missing age classes.
+- Malformed, duplicate, or out-of-range basin coordinates/radii.
+- Antipodes that do not exactly match the mathematical transform.
+- Missing, stale, or hash-mismatched source/canonical manifests.
 
 LROC TiO2 is intentionally nodata poleward of 70 degrees, so its expected canonical numeric
 coverage is 77.78%. The five-layer common footprint is checked accordingly. That coverage
@@ -122,8 +122,8 @@ verified provenance.
 
 ## Scientific cautions
 
-- One degree is about 30 km at the equator — a horizontal ground resolution, not a
-  measurement height — and is close to the useful resolution floor of the surface
+- One degree is about 30 km at the equator, a horizontal ground resolution, not a
+  measurement height, and is close to the useful resolution floor of the surface
   magnetic map (Kaguya/Lunar Prospector SVM). Finer interpolation does not create
   independent evidence.
 - The Bouguer field is ingested in full. The exploratory difference-of-Gaussians
@@ -134,7 +134,7 @@ verified provenance.
 - The cited LROC WAC algorithm and Sato et al. product concern **mare** TiO2. The current
   ingestion masks polar absence and implausible numeric values but does not exclude highlands.
   Quantitative highland values are therefore out-of-domain for this analysis unless
-  independently validated; they must not be read as reliable low-Ti measurements.
+  independently validated. They must not be read as reliable low-Ti measurements.
 - The implemented mare-domain sensitivity uses the external USGS Unified Geologic Map GIS v2
   and a frozen allowlist: `Em`, `Im1`, `Im2`, and `Imd` (Eratosthenian mare, lower/upper
   Imbrian mare, and mare dome). It is still an approximate 1:5M mapped-geology proxy: mapped
@@ -142,11 +142,11 @@ verified provenance.
   and analysis resolution. In the Imbrian ∩ quantitative scope it retains **3,928** pixels
   across **30 mare blocks (15 contain positives)**. H1+controls / controls ≈ 0.4766 /
   0.4213 (drop ≈ 0.0553). Wilcoxon *p* is unavailable for a significance claim. The post-hoc
-  result is inconclusive — not confirmation.
+  result is inconclusive, not confirmation.
 - The six-basin catalogue is a declared approximate model choice, not an observational
   download or exhaustive impact database. Its analytically exact antipodes are exact only
   relative to those approximate inputs. H2 is therefore a benchmark, not assured truth.
 - The 10 nT binary target (25 nT sensitivity) discards continuous field magnitude and yields
   about 168 clustered positives among 4374 quantitative Imbrian pixels (prevalence ≈ 0.0384).
-  Numeric pixel count must not be mistaken for independent sample size; the bundled
+  Numeric pixel count must not be mistaken for independent sample size. The bundled
   diagnostics estimate `n_eff ≈ 6.9`.
