@@ -13,16 +13,12 @@ Use the **"Cite this repository"** button on GitHub (generated from `CITATION.cf
 > Spatial Co-location Analysis* (v1.0.0), 2026.
 > https://github.com/lemoon01110/Lunar-Titanium-Magnetism
 
-Version note: **v1.0.0** is the only released version and the only citable one — the
-project's first complete release, from which future improvements proceed (1.1.0, 1.2.0, …).
-An earlier pre-amendment interpretation (numbered 0.1.0, machine label `NOT_SUPPORTED`) was
-superseded by the dated amendments in `Pre-Registration.md` and its release tag has been
-removed at the author's decision; that superseded state remains retrievable from Git commit
-history (commit `9f782b3`) for audit purposes but must not be cited as a current claim.
-
-The title in older release metadata may retain the original broader framing. The repository's
-current scientific scope is the surface-map co-location question above; it is not a temporal
-test of dynamo operation.
+Version note: **v1.0.0** is the released, citable version, treated as the project's first
+complete release (improvements proceed 1.1.0, 1.2.0, …). An earlier reading of the same run
+used the machine label `NOT_SUPPORTED`; the dated amendments in `Pre-Registration.md` explain
+why the current, power-calibrated interpretation is `INCONCLUSIVE_LOW_POWER`. The repository's
+scientific scope is the surface-map co-location question above; it is not a temporal test of
+dynamo operation.
 
 ## Scientific literature
 

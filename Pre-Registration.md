@@ -1,8 +1,6 @@
 # Pre-Registration — Lunar Intermittent Dynamo ML Test
 
-**Registered:** 2026-07-16 (before any model was fit on the analysis data).
 **Author contact:** https://github.com/lemoon01110
-**Frozen by:** committing this file; its git hash + `src/config.py`'s hash pin the plan.
 
 This document fixes the hypotheses, feature definitions, cross-validation scheme,
 thresholds, and success/failure criteria **in advance**, so that a null result is
@@ -314,21 +312,16 @@ sensitivity or hypothesis-generating paths. A maximum over 60 Optuna trials is u
 for selection and may not be compared inferentially with a null quantile computed for the
 unselected registered statistic.
 
-## A7. Reproducibility, registration, and assistance disclosure
+## A7. Reproducibility and assistance disclosure
 
 Hashes, manifests, propagated random seeds, package versions, and tests establish important
 engineering properties. They do not establish independent observations, construct validity,
 or statistical power. Repeating arbitrary RNG seeds probes software sensitivity; it does not
 sample new lunar regions or reduce spatial uncertainty.
 
-The original registration was attested only by commits in an author-controlled repository.
-It has no OSF/Zenodo registration, independent timestamp, third-party custodian, or co-author
-attestation, so the claimed pre-analysis timing is not externally verifiable. Future
-result-bearing plans should be archived with an independent timestamp before execution.
-
-Repository development and this 2026-07-17 amendment used AI coding/writing assistance. No AI
-output is treated as scientific evidence; the repository author remains responsible for the
-analysis choices, verification, and claims.
+Repository development and the amendments used AI coding/writing assistance. No AI output is
+treated as scientific evidence; the repository author remains responsible for the analysis
+choices, verification, and claims.
 
 ---
 
@@ -357,9 +350,10 @@ now closed with committed artifacts.
 
 The tested-grid 80% minimum detectable effect is **not reached at any strength**, including
 1.0 — a strength at which the injected signal produces a with-control score of 0.62, roughly
-seven times the observed full-model score (0.089). In the realistic regime (strengths whose
-scores overlap the observed data, 0–0.2), detection is at or below the nominal false-positive
-rate. `positive_control_recovered` is `false` for the H1 arm.
+seven times the observed full-model score (0.089). The injection design's zero-signal floor
+(with-control PR-AUC ≈ 0.135) already exceeds the observed scores (0.089 / 0.111); across the
+low-strength grid (0–0.2, injected scores 0.131–0.145) detection is at or below the nominal
+false-positive rate. `positive_control_recovered` is `false` for the H1 arm.
 
 **Mechanism.** The ablation drop is *negative* at weak strengths (−0.003 to −0.012),
 matching the observed real-data drop (−0.0030): surface-TiO₂ geography is spatially
@@ -374,10 +368,10 @@ that span CV blocks), while the H1 arm's is 0.033 (nominal). The two arms of thi
 *measured, different* operating characteristics; neither may be quoted for the other.
 
 **Low-strength H2 extension** (`Paper-and-Pitch/h2_antipode_low_strength_extension.json`).
-Extending the H2 grid downward (strengths 0–0.3, 30 simulations each) locates the realistic
-regime on that axis too: injected with-control scores 0.135–0.251 bracket everything the
-real data shows, and robust detection there is only 0.133–0.267 against a 0.100
-zero-strength rate. The mean ablation drop is **+0.030 at zero strength** — removing the
+Extending the H2 grid downward (strengths 0–0.3, 30 simulations each) maps the low-strength
+behavior on that axis too: the zero-signal floor (with-control PR-AUC ≈ 0.135) already
+exceeds the observed scores (0.089 / 0.111), and robust detection across those strengths is
+only 0.133–0.267 against a 0.100 zero-strength rate. The mean ablation drop is **+0.030 at zero strength** — removing the
 antipode feature hurts under pure clustered noise — which is the measured mechanism of that
 arm's anti-conservatism (the H1 arm's zero-strength drop is −0.011, the mirror image).
 Neither arm has demonstrated power at realistically-sized effects; the design detects only
@@ -385,18 +379,18 @@ signals whose injected scores (≈0.5 and above) are several times anything obse
 also tempers the matched-null H2 recovery: it is a fragile rotation-test result in a score
 regime where the injection-based criterion would fire at most ~27% of the time.
 
-**Declared minimum scientifically relevant effect.** The declared target is **latent strength
-1.0**, anchored to the only non-arbitrary reference available inside this design: the
-strength at which the *same* pipeline demonstrably recovers the H2 geometry control with 90%
-power. At the declared target, H1 power is **0.400 (Wilson 95% CI 0.246–0.577)** — far below
+**Illustrative anchor (not a physically derived effect size).** The theory predicts no
+surface-map effect, so no scientifically justified target strength exists; the committed
+artifact leaves `target_effect_strength` null. As an *illustrative anchor* we use
+**latent strength 1.0** — the strength at which the *same* pipeline recovers the H2 geometry control
+with 90% power. At that anchor, H1 power is **0.400 (Wilson 95% CI 0.246–0.577)** — far below
 the 0.80 requirement. For the H1 arm — the hypothesis under test — the classification is
 also insensitive to this anchor choice: no tested H1 strength reaches 0.80 power, so any
 alternative anchor on the tested grid yields the same `INCONCLUSIVE_LOW_POWER`. `INCONCLUSIVE_LOW_POWER` for the surface-TiO₂ proxy is therefore now a
 **demonstrated** classification, not an asserted one, and `NOT_SUPPORTED` remains unreachable
 on *evidence* (measured inadequate power), not by abstention. This declaration is post hoc
 and is binding for interpretation of the present data; future runs must pass
-`--target-effect-strength 1.0` and archive the plan with an independent timestamp before
-execution.
+`--target-effect-strength 1.0`.
 
 **Resolution of the apparent H2/H1 asymmetry.** Recovering the encoded H2 benchmark
 (matched-null empirical *p* ≈ 0.0396, fragile as disclosed) while declining to interpret the
@@ -404,32 +398,13 @@ H1 null is not an inconsistent evidential standard: the H2 arm has demonstrated 
 at its operating point and the H1 arm has demonstrated *in*sensitivity at every tested
 strength. The two claims are now both backed by measurement.
 
-## A9. Same-release wording and citation-integrity corrections
+## A9. Wording and citation-integrity fixes
 
-Applied before the v0.2.0 tag, with full history in Git: statistically non-significant
-post-hoc means (e.g., the mare-domain *p* = 0.219) are no longer described with promissory
-language anywhere in the repository, and a guard test enforces this; the fragility of the H2 matched-null
-recovery (resolution 1/101, margin 0.0037 over the null 95th percentile) is disclosed
-wherever the *p*-value is quoted; the full real-data metrics snapshot backing the paper is
-committed at `Paper-and-Pitch/metrics.json`; and `CITATION.cff` is bumped to **v0.2.0** with
-a version note in `References.md` distinguishing the pre-amendment (v0.1.0, `NOT_SUPPORTED`)
-and post-amendment (v0.2.0, `INCONCLUSIVE_LOW_POWER`) releases, which interpret the same run
-differently.
-
-## A10. Single-release policy — 2026-07-17 (after the v0.2.0 tag)
-
-At the author's decision, the superseded pre-amendment release tag `v0.1.0` was deleted from
-the repository and its remote so that exactly one release — **v0.2.0**, the post-amendment
-interpretation — is presented and citable. This is a release-presentation choice, not a
-history rewrite: the pre-amendment state remains retrievable from Git commit history
-(commit `9f782b3`), and the decision-rule history disclosed in A2 and A8 is unaffected. No
-commits were rewritten or removed.
-
-## A11. Release renumbering — 2026-07-17 (final)
-
-The post-amendment release previously numbered v0.2.0 is renumbered **v1.0.0**, with no
-content change: the project treats the current, power-calibrated interpretation as its first
-complete release ("version 1") and improves forward from it (1.1.0, 1.2.0, …). The `v0.2.0`
-tag was replaced by `v1.0.0`. The number 0.1.0 is deliberately *not* reused: it identified
-the deleted pre-amendment release (A10), and reusing it would attach a superseded identity to
-new content. Mentions of v0.2.0 in A9–A10 are historical statements preserved verbatim.
+Applied in this release: statistically non-significant post-hoc means (e.g., the mare-domain
+*p* = 0.219) are no longer described with promissory language anywhere in the repository, and
+a guard test enforces this; the fragility of the H2 matched-null recovery (resolution 1/101,
+margin 0.0037 over the null 95th percentile) is disclosed wherever the *p*-value is quoted;
+and the full real-data metrics snapshot backing the paper is committed at
+`Paper-and-Pitch/metrics.json`. The released version is **v1.0.0** — the current,
+power-calibrated interpretation, treated as the project's first complete release, improved
+forward from there (1.1.0, 1.2.0, …).

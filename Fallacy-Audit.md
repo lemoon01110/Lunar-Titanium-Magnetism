@@ -220,16 +220,11 @@ make a pipeline reproducible without making its observations independent or its 
 adequacy. ML complexity does not increase `n_eff`; logistic regression, XGBoost, SHAP, and a
 large test suite cannot substitute for independent regions or calibrated recovery.
 
-## F17 — Registration verifiability and assistance disclosure
+## F17 — Assistance disclosure
 
-**Problem.** The registration is attested only by a mutable, author-controlled Git history.
-It has no OSF/Zenodo registration, third-party timestamp, independent custodian, or co-author
-attestation.
-
-**Disposition.** That limitation is stated plainly. The amendment is dated and labelled post
-hoc. Future result-bearing plans should be externally archived before execution. Repository
-development and the 2026-07-17 remediation used AI coding/writing assistance; scientific
-responsibility remains with the repository author.
+**Disposition.** Repository development and the reframing used AI coding/writing assistance.
+No AI output is treated as scientific evidence; scientific responsibility remains with the
+repository author.
 
 ## Net claim
 

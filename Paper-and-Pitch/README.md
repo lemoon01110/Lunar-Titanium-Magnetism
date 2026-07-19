@@ -16,7 +16,7 @@ that the encoded H2 benchmark is recovered; it does not repair H1 power.
 | [`h2_antipode_low_strength_extension.json`](h2_antipode_low_strength_extension.json) | Downward extension of the H2 curve locating the real benchmark's regime on the strength axis. |
 | [Seed-Robustness.md](Seed-Robustness.md) | Demoted random-seed software diagnostic; raw values remain in [`seed_robustness.csv`](seed_robustness.csv). |
 | [Exploratory-Robustness.md](Exploratory-Robustness.md) | Post-hoc, uncalibrated implementation diagnostics; not inferential robustness. |
-| [Pitch.pptx](Pitch.pptx) · [Pitch.pdf](Pitch.pdf) | Revised 11-slide communication deck synchronized to the amended metrics, scope, and inference status. |
+| [Pitch.pptx](Pitch.pptx) · [Pitch.pdf](Pitch.pdf) | Revised 12-slide communication deck synchronized to the amended metrics, scope, and inference status. |
 
 ## Current interpretation
 
@@ -111,12 +111,14 @@ change.
 
 Input hashes, fail-closed ingestion, fixed package versions, and seeded reruns are
 engineering safeguards. They do not make spatial pixels independent or validate a proxy in
-highland terrain. The repository registration was attested only through author-controlled Git
-history, without an independent OSF/Zenodo timestamp. This is an independent, LLM-assisted
-learning project: repository development and the 2026-07-17 framing amendment used AI
-coding/writing assistance extensively, because learning to run — and honestly correct — a
-rigorous analysis was the project's purpose. Scientific responsibility remains with the
-repository author.
+highland terrain. This is an independent, LLM-assisted learning project: repository
+development and the reframing used AI coding/writing assistance extensively, because learning
+to run — and honestly correct — a rigorous analysis was the project's purpose. Scientific
+responsibility remains with the repository author.
+
+The materials in this folder (paper, slides, figures, CSV/JSON) are licensed **CC BY 4.0**
+([`../LICENSE-CC-BY-4.0.txt`](../LICENSE-CC-BY-4.0.txt)) — reuse with credit to the author,
+and do not present the work as your own. Repository code is MIT ([`../LICENSE`](../LICENSE)).
 
 Underlying LROC/LRO, GRAIL, USGS, and JAXA/Kaguya datasets are not redistributed here and
 remain under their institutions' terms. See [`../Data-Sources.md`](../Data-Sources.md) and

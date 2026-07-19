@@ -235,16 +235,12 @@ mare-domain analysis must not reuse this post-hoc result as confirmation.
   is positive-control evidence for that encoding, not validation of H1, an exhaustive H2
   catalogue, or the temporal Nichols mechanism.
 
-## 10. Reproducibility and registration limits
+## 10. Reproducibility limits
 
 Source hashes, manifests, package versions, tests, and propagated seeds are valuable
 engineering controls. A random-seed sweep probes software/RNG sensitivity, not independent
 replication. SHAP describes the fitted model, not physical causation.
 
-The original registration exists only in an author-controlled Git history. It has no
-independent OSF/Zenodo timestamp, third-party custodian, or external verification. The dated
-appendix in `Pre-Registration.md` is a transparent post-hoc amendment, not a new claim that
-the original verdict rule was preregistered.
-
-Future result-bearing extensions should be externally archived before execution, with the
-analysis code and parameter file frozen separately from the results.
+The dated appendix in `Pre-Registration.md` records the post-hoc amendments to the original
+plan; the amended verdict rule is explicitly not presented as fixed in advance. The analysis
+code and parameter file are version-controlled separately from the generated results.

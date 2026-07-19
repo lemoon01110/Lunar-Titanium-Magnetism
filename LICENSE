@@ -26,3 +26,8 @@ the pipeline (LROC WAC, GRAIL, USGS, JAXA/Kaguya products) are the property of
 their respective institutions (NASA/PDS, USGS, JAXA) and are governed by their
 own terms; see Data-Sources.md for sources and citations. No third-party data are
 distributed in this repository.
+
+NOTE ON NON-CODE CONTENT: The paper, slides, figures, and data artifacts (CSV/JSON) authored
+in this repository are licensed separately under Creative Commons Attribution 4.0
+International (CC BY 4.0); see LICENSE-CC-BY-4.0.txt. Reuse is permitted with attribution to
+the author.

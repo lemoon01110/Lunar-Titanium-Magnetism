@@ -96,7 +96,7 @@ statistically significant and fold-unstable. A
   completed direct H2 injection curve recovers only large encoded effects and leaves
   `adequate_power` false. A companion H1 (TiO#sub[2]-driver) injection curve, with the
   strength grid extended into the realistic score regime, calibrates the sensitivity of the
-  hypothesis actually under test: at the declared strength-1.0 target its power is 0.400
+  hypothesis actually under test: at an illustrative strength-1.0 anchor its power is 0.400
   (Wilson 95% CI 0.246–0.577), so the low-power classification is demonstrated, not asserted.
 ]
 
@@ -111,7 +111,7 @@ statistically significant and fold-unstable. A
   this study cannot confirm or refute it; the mechanism may be entirely correct.
   *Mappability (tested).* A separate, narrower question — whether present-day orbital surface
   TiO#sub[2] is a usable _global map proxy_ for anomaly location at ~30 km — for which this
-  pipeline finds no usable predictive signal.
+  pipeline did not detect incremental predictive value.
   *Not a disproof.* The injection test recovers even a strong planted TiO#sub[2] signal only
   ~40% of the time (target 80%) with effective regions ≈1, so failure to detect is not
   evidence of absence — hence #raw("INCONCLUSIVE_LOW_POWER"), not "decoupled". Scale/ecological
@@ -304,9 +304,10 @@ quartiles is 0.05565 and the corrected odds ratio is about 606.8, with effective
 bottom-quartile positives.
 
 A downward grid extension (`h2_antipode_low_strength_extension.json`; strengths 0–0.3, 30
-simulations each) locates the realistic regime on this axis: injected with-control scores
-0.135–0.251 bracket everything the real data shows, and robust detection there is only
-0.133–0.267 against the 0.100 zero-strength rate. Even the H2 arm therefore has no
+simulations each) maps the low-strength behavior on this axis: the design's zero-signal floor
+(with-control PR-AUC ≈ 0.135) already exceeds the observed scores (0.089 / 0.111), and across
+these strengths (injected scores 0.135–0.251) robust detection is only 0.133–0.267 against
+the 0.100 zero-strength rate. Even the H2 arm therefore has no
 demonstrated power at realistically-sized effects — its 90%-power operating point
 corresponds to injected scores several times anything observed. The mean ablation drop is
 +0.030 *at zero strength* (removing the antipode feature hurts under pure clustered noise),
@@ -321,7 +322,7 @@ coefficient is a simulation unit, not a lunar-physics effect size. The artifact 
 reproduces a 3,751.7 km fitted range and effective-region estimate of 1.0; both 30°
 (909.7 km) and 60° (1,819.4 km) blocks remain shorter than the range.
 
-== Completed H1 injection curve and declared target effect
+== Completed H1 injection curve and illustrative anchor
 
 The same injection design applied to the *hypothesis actually under test*, with the strength
 grid extended down into the realistic score regime
@@ -344,10 +345,10 @@ grid extended down into the realistic score regime
   [1.0], [12/30 (0.400)], [0.246–0.577], [0.622], [+0.2795],
 )
 
-The tested-grid 80% minimum detectable effect is *not reached at any strength*. In the
-regime whose injected scores overlap the observed data (strengths 0–0.2, scores
-0.131–0.145 versus the observed 0.089), detection sits at or below the nominal
-false-positive rate. Mechanistically, the ablation drop is *negative* at weak strengths —
+The tested-grid 80% minimum detectable effect is *not reached at any strength*. The injection
+design's zero-signal floor (with-control PR-AUC ≈ 0.135) already exceeds the observed scores
+(0.089 / 0.111); across the low-strength grid (0–0.2, injected scores 0.131–0.145) detection
+sits at or below the nominal false-positive rate. Mechanistically, the ablation drop is *negative* at weak strengths —
 matching the observed real-data drop of −0.0030 — because surface-TiO#sub[2] geography is
 spatially collinear with the `nearside`/`abs_latitude` controls: after ablation, the
 controls absorb most of a true TiO#sub[2]-driven signal. The registered ablation criterion
@@ -358,13 +359,16 @@ Zero-strength false-positive rates are *arm-specific*: 0.133 for the H2 arm (the
 antipode kernel can align with clustered noise blobs spanning CV blocks) versus 0.033
 (nominal) for the H1 arm. Neither arm's operating characteristics may be quoted for the
 other — this also resolves the apparent evidential asymmetry between recovering the H2
-benchmark and declining to interpret the H1 null: the H2 arm has *demonstrated sensitivity*
-at its operating point, the H1 arm *demonstrated insensitivity* at every tested strength.
+benchmark and declining to interpret the H1 null: the H2 arm shows *demonstrated sensitivity*
+at its operating point, while the H1 arm *did not reach adequate power at any tested strength*
+(recovery 0.20 at 0.5, 0.40 at 1.0 — inadequate, not zero).
 
-*Declared target effect (Amendment A8).* The minimum scientifically relevant effect is
-declared as latent strength 1.0 — the strength at which the same pipeline demonstrably
-recovers the H2 geometry control with 90% power. Measured H1 power at the declared target is
-*0.400 (Wilson 95% CI 0.246–0.577)*, far below the 0.80 requirement. `adequate_power` is
+*Interpretive anchor (Amendment A8).* No physically derived effect size exists — the theory
+predicts no surface-map effect — so we use latent strength 1.0 as an _illustrative anchor_:
+the strength at which the same pipeline recovers the H2 geometry control with 90% power. The
+committed artifact leaves `target_effect_strength` null. Measured H1 power at that anchor is
+*0.400 (Wilson 95% CI 0.246–0.577)*, far below the 0.80 requirement, and the classification
+does not depend on it (no tested H1 strength reaches 0.80 power). `adequate_power` is
 therefore false *on measurement*, not by abstention, and `NOT_SUPPORTED` remains unreachable
 on evidence.
 
@@ -420,9 +424,8 @@ independent confirmation or repair the structural effective-region limitation.
 
 Acquisition hashes, fail-closed ingestion, package records, deterministic seeds, and tests
 provide engineering rigor. They do not make pixels independent, validate highland TiO#sub[2],
-or increase statistical power. The registration exists only in author-controlled Git history,
-without an independent OSF/Zenodo timestamp; its timing is not externally verifiable. The
-2026-07-17 amendment is explicitly post hoc and preserves the original text.
+or increase statistical power. The dated amendments are explicitly post hoc and preserve the
+original text.
 
 This is an *independent learning project*: the author is not a professional planetary
 scientist and undertook the work because the Nichols et al. (2026) hypothesis was

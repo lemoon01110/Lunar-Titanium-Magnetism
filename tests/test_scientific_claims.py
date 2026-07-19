@@ -145,10 +145,17 @@ def test_continuous_result_is_reported_as_descriptive_not_independent_evidence()
     assert re.search(r"remains descriptive|descriptive because", readme, re.I)
 
 
-def test_registration_limit_is_explicit():
+def test_no_false_verifiable_registration_claim():
+    """The repo asserts no externally verifiable pre-registration timestamp, and
+    carries no dead git-provenance pointers. Guard against either reappearing."""
     readme = _read("README.md")
-    assert "no OSF/Zenodo registration" in readme
-    assert "not externally verifiable" in readme
+    prereg = _read("Pre-Registration.md")
+    refs = _read("References.md")
+    assert "Registered: 2026-07-16" not in readme and "Registered: 2026-07-16" not in prereg
+    assert not re.search(r"git hash[^.\n]*pin", prereg, re.I)
+    for doc in (readme, prereg, refs):
+        assert "9f782b3" not in doc
+        assert "no commits were rewritten" not in doc.lower()
 
 
 def test_machine_readable_power_and_benchmark_artifacts_fail_closed():

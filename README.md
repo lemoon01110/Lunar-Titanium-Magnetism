@@ -34,7 +34,7 @@ dynamo.
 > **The mappability (what we actually tested).** A separate, narrower question: can
 > present-day *orbital surface* TiO₂ act as a **global map proxy** — predicting *where*
 > crustal anomalies sit — at ~30 km (1°) resolution? On the best current global datasets,
-> this pipeline found **no usable predictive signal**.
+> this pipeline **did not detect incremental predictive value**.
 >
 > **What that failure does *not* establish.** It is **not** a proof that the two are
 > physically decoupled, nor that surface TiO₂ can never serve as a proxy. The pipeline's own
@@ -54,7 +54,7 @@ dynamo.
 >   with sharp compositional boundaries.
 >
 > **One honest line:** *this does not falsify the Nichols dynamo; it shows that present-day
-> orbital surface titanium is not a usable global map-proxy in current data, and it
+> orbital surface titanium did not provide a usable global map-proxy in current data, and it
 > quantifies that current global data lack the power to settle the question either way.*
 
 The science path uses provenance-validated institutional products. Synthetic data remain
@@ -82,7 +82,7 @@ Criticism and corrections are welcome via issues.
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt   # runtime deps + test tools (pytest); use requirements.txt for runtime only
 
 python -m src.acquire all
 python -m src.ingest all
@@ -199,11 +199,8 @@ underpowered run is `INCONCLUSIVE_LOW_POWER`.
 This change is explicitly **post hoc**. It does not rewrite the original commitments and is
 reported so readers can see the full decision-rule history.
 
-The original registration was attested only by commits in this author-controlled Git
-repository. It has no OSF/Zenodo registration, third-party timestamp, or independent
-custodian, so its timing is not externally verifiable. Repository development and the
-2026-07-17 framing amendment used AI coding/writing assistance; the repository author is
-responsible for all scientific choices and claims.
+Repository development and the amendments used AI coding/writing assistance; the repository
+author is responsible for all scientific choices and claims.
 
 ## Measurement and scope limits
 
@@ -243,8 +240,9 @@ The two required follow-ups now have different statuses:
    [`Paper-and-Pitch/positive_control_power_analysis.json`](Paper-and-Pitch/positive_control_power_analysis.json).
    A downward grid extension
    ([`h2_antipode_low_strength_extension.json`](Paper-and-Pitch/h2_antipode_low_strength_extension.json))
-   locates the realistic regime: at strengths 0.025–0.3 (injected scores 0.135–0.251,
-   bracketing everything the real data shows) robust detection is only 0.133–0.267 against a
+   maps the low-strength behavior: the design's zero-signal floor (with-control PR-AUC ≈ 0.135)
+   already exceeds the observed scores (0.089 / 0.111), and across strengths 0.025–0.3 (injected
+   scores 0.135–0.251) robust detection is only 0.133–0.267 against a
    0.100 zero-strength rate — so even the H2 arm has no demonstrated power at
    realistically-sized effects, and its mean ablation drop is **+0.030 at zero strength**
    (removing the antipode feature hurts under pure clustered noise), the measured mechanism
@@ -256,7 +254,7 @@ The two required follow-ups now have different statuses:
    extended down into the realistic score regime
    ([`Paper-and-Pitch/h1_tio2_power_analysis.json`](Paper-and-Pitch/h1_tio2_power_analysis.json)).
    Robust recovery is 1/30 at strength 0, 0–1/30 across 0.025–0.2 (injected scores 0.131–0.145,
-   the regime overlapping the observed 0.089), 0/30 at 0.3, 6/30 (0.200) at 0.5, and only
+   already above the observed 0.089), 0/30 at 0.3, 6/30 (0.200) at 0.5, and only
    12/30 (**0.400**, Wilson 95% CI 0.246–0.577) at 1.0 — a strength whose injected
    with-control score (0.62) is roughly seven times the observed. The tested-grid 80% minimum
    detectable effect is **not reached at any strength**. Mechanistically, the ablation drop is
@@ -280,13 +278,14 @@ The two required follow-ups now have different statuses:
    only +0.0014. Mare-only range is ≈3,289 km versus ≈910 km blocks and `n_eff = 1`, so the
    continuous result is also structurally inconclusive.
 
-With the H1 curve complete, a minimum scientifically relevant effect is now **declared**
-(Amendment A8 in [`Pre-Registration.md`](Pre-Registration.md)): latent strength 1.0, anchored
-to the only non-arbitrary reference inside this design — the strength at which the same
-pipeline demonstrably recovers the H2 geometry control with 90% power. Measured H1 power at
-the declared target is **0.400 (Wilson 95% CI 0.246–0.577)**, far below the 0.80 requirement
-— and the classification is insensitive to the anchor choice, since no tested H1 strength
-reaches 0.80 power.
+With the H1 curve complete, we anchor interpretation to an **illustrative** effect
+(Amendment A8 in [`Pre-Registration.md`](Pre-Registration.md)): latent strength 1.0 — the
+strength at which the same pipeline recovers the H2 geometry control with 90% power. It is
+**not** a physically derived effect size (the theory predicts none for a surface map), and
+the committed artifact leaves `target_effect_strength` null. Measured H1 power at that anchor
+is **0.400 (Wilson 95% CI 0.246–0.577)**, far below the 0.80 requirement — and the
+classification is insensitive to the anchor choice, since no tested H1 strength reaches 0.80
+power.
 `INCONCLUSIVE_LOW_POWER` is therefore **demonstrated rather than asserted**: the registered
 criteria could not reliably fire even for a TiO₂-driven signal seven times stronger than
 anything observed. `positive_control_recovered` is true only for the H2 arm (false for the
@@ -353,7 +352,13 @@ distributes no third-party data.
   noting that the corrected scope is the spatial co-location question above.
 - **Bibliography:** [`References.md`](References.md).
 - **Data provenance:** [`Data-Sources.md`](Data-Sources.md).
-- **License:** [MIT](LICENSE) for code; source datasets remain under their institutions' terms.
+- **License:** code is [MIT](LICENSE); the paper, slides, figures, and data artifacts
+  (CSV/JSON) are [CC BY 4.0](LICENSE-CC-BY-4.0.txt) — reuse and adaptation are welcome **with
+  credit to the author**, and the work may not be presented as someone else's. Suggested
+  attribution: *"Lemon (lemoon01110), Surface TiO2 and Lunar Crustal Magnetism: An
+  Underpowered Spatial Co-location Analysis (v1.0.0, 2026),
+  https://github.com/lemoon01110/Lunar-Titanium-Magnetism, CC BY 4.0."* Third-party lunar
+  datasets are not redistributed and remain under their institutions' terms.
 
 ## Repository layout
 

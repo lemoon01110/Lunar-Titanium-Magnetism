@@ -236,7 +236,10 @@ def test_data_source_dois_are_in_the_bibliography():
 def test_license_covers_code_and_disclaims_third_party_data():
     license_text = _read("LICENSE")
     assert license_text.lstrip().startswith("MIT License")
-    assert _load_cff()["license"] == "MIT"
+    cff_license = _load_cff()["license"]
+    licenses = cff_license if isinstance(cff_license, list) else [cff_license]
+    assert "MIT" in licenses, "code license (MIT) missing from CITATION.cff"
+    assert "CC-BY-4.0" in licenses, "content license (CC-BY-4.0) missing from CITATION.cff"
     assert _load_pyproject()["project"]["license"] == {"file": "LICENSE"}
     assert (ROOT / "LICENSE").exists()
     # The code license must not be mistaken for a data license.

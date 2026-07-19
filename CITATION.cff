@@ -22,8 +22,10 @@ authors:
     alias: lemoon01110
     orcid: "https://orcid.org/0009-0004-1710-9018"
 version: "1.0.0"
-date-released: "2026-07-17"
-license: MIT
+date-released: "2026-07-18"
+license:
+  - MIT
+  - CC-BY-4.0
 url: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
 repository-code: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
 keywords:
