@@ -1,8 +1,8 @@
 # Present-Day Surface TiO₂ and Lunar Crustal Magnetic Anomalies
 
-> [!IMPORTANT]
-> **DISCLAIMER: AI-ASSISTED LEARNING PROJECT**
-> This repository is an educational project created for learning and experience. The code, documentation, and scientific analysis pipelines were developed with the extensive assistance of Large Language Models (AI). While rigorous testing (including falsifiability guards and spatial validation) has been implemented to ensure mathematical integrity, the text and framing should be read with the understanding that AI tools were used to aid in drafting and architecting this repository.
+> [!NOTE]
+> **Educational & AI-Assisted Project**
+> This repository is a personal project created for learning and hands-on experience. Artificial Intelligence (Large Language Models) was used extensively throughout its development to help me **write the code, understand the geophysical concepts, and rigorously catch statistical and logical errors**. It is a demonstration of using AI as a research and learning assistant, and the results should be read in that educational context.
 
 *An underpowered test of spatial co-location, not a temporal test of the intermittent-dynamo mechanism*
 

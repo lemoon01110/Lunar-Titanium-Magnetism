@@ -412,9 +412,10 @@ independent lunar uncertainty.
 *Injection-recovery power.* Both arms are now complete: the direct H2 ablation curve and the
 H1 (TiO#sub[2]-driver) curve with a downward-extended grid. Neither is full pipeline-decision
 power (tuning, permutation, SHAP, and the conjunctive H1 rule were not resimulated), and the
-latent coefficient is a simulation unit, not a lunar effect scale. A target effect is now
-declared (strength 1.0, Amendment A8) with measured H1 power 0.400 — below the 0.80
-adequacy requirement, making the low-power classification a measurement.
+latent coefficient is a simulation unit, not a lunar effect scale. At the illustrative
+strength-1.0 anchor (Amendment A8; the committed artifact leaves `target_effect_strength`
+null), measured H1 power is 0.400 — below the 0.80 adequacy requirement, making the
+low-power classification a measurement.
 
 *Terrain validity.* The USGS mare-domain comparison above is now available as a post-hoc
 descriptive sensitivity. Its small positive count and fold concentration do not provide an
@@ -439,8 +440,9 @@ the repository rather than hidden.
 
 The current global rasters and pipeline do not distinguish the tested present-day surface-
 composition proxy from spatial null structure, and the completed H1 injection curve shows the
-design has measured, inadequate power (0.400 at the declared target; at the false-positive
-rate in the realistic regime) to detect even strong versions of that proxy. This is not a
+design has measured, inadequate power (0.400 at the illustrative strength-1.0 anchor; at the
+false-positive rate across the low-strength grid) to detect even strong versions of that
+proxy. This is not a
 discovery of the scale at which titanium "stops" mattering, not a refutation of impact
 magnetization, and not a test of the temporal intermittent-dynamo mechanism. What the study
 now contributes is a calibrated statement of what this design *could* and *could not* have

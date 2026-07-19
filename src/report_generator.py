@@ -83,10 +83,11 @@ def generate_pdf_report(metrics_path: str, figures_dir: str, output_pdf: str) ->
     pdf.ln(3)
 
     pdf.set_font("helvetica", "I", 10)
-    pdf.multi_cell(0, 5, "DISCLAIMER: AI-ASSISTED LEARNING PROJECT\n"
-                         "This is an educational project created for learning and experience. "
-                         "Large Language Models (AI) were used extensively to aid in completing, "
-                         "writing, and architecting this analysis pipeline and its documentation.")
+    pdf.multi_cell(0, 5, "EDUCATIONAL & AI-ASSISTED PROJECT\n"
+                         "This is a personal project created for learning and hands-on experience. "
+                         "Artificial Intelligence (Large Language Models) was used extensively "
+                         "throughout its development to help write the code, understand the geophysical "
+                         "concepts, and rigorously catch statistical and logical errors.")
     pdf.ln(3)
     pdf.set_font("helvetica", "", 10)
 
