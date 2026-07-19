@@ -2,8 +2,7 @@
 
 > [!NOTE]
 > **Independent work, openly assisted.** An independent learning project, not peer reviewed yet. Language models (LLMs) assisted with code, drafting, and adversarial review.
-> Scientific framing and every claim remain the author’s. Built to be checked: hashes, tests,
-> and a public decision history.
+> Scientific framing and every claim remain the author’s.
 
 *An underpowered test of spatial co-location, not a temporal test of the intermittent-dynamo mechanism*
 
