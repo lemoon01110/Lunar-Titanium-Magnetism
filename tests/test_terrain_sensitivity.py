@@ -49,7 +49,7 @@ def test_mask_must_be_complete_strict_boolean_or_zero_one(bad_values):
         terrain.validate_terrain_mask(df)
 
 
-@pytest.mark.parametrize("unsafe_field", ["tio2", "tio2_25km", "age_class", "mag_binary_5nT"])
+@pytest.mark.parametrize("unsafe_field", ["tio2", "tio2_25km", "age_class", "mag_binary_10nT"])
 def test_provenance_rejects_circular_or_outcome_derived_masks(unsafe_field):
     with pytest.raises(terrain.TerrainMaskError, match="may not be derived"):
         terrain.TerrainMaskProvenance(
@@ -119,7 +119,7 @@ def _evaluation_frame(seed: int = 3) -> pd.DataFrame:
             "crustal_thickness": rng.uniform(20, 60, n),
             "abs_latitude": rng.uniform(0, 80, n),
             "nearside": rng.uniform(-1, 1, n),
-            "mag_binary_5nT": y,
+            "mag_binary_10nT": y,
         }
     )
 
@@ -129,7 +129,7 @@ def test_full_vs_mare_uses_inherited_spatial_folds_and_only_supported_tio2():
     cfg = config.PipelineConfig(n_outer_folds=5, random_seed=17, mode="fast")
     result = terrain.evaluate_full_vs_mare(
         df,
-        "mag_binary_5nT",
+        "mag_binary_10nT",
         cfg,
         model_factory=modeling.logreg_factory(seed=17),
         min_rows=50,
@@ -167,7 +167,7 @@ def test_documented_buffer_support_enables_only_covered_buffer_features():
     df["tio2_50km"] = df["tio2"]
     result = terrain.evaluate_full_vs_mare(
         df,
-        "mag_binary_5nT",
+        "mag_binary_10nT",
         config.PipelineConfig(n_outer_folds=5, mode="fast"),
         provenance=provenance,
         model_factory=modeling.logreg_factory(seed=42),

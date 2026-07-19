@@ -12,3 +12,4 @@ pyproj>=3.6
 geopandas>=0.14       # required by the default real-data USGS polygon ingestion
 joblib>=1.3           # explicit parallel backend used by permutation evaluation
 fpdf2>=2.7.6          # modern fpdf2 API (text=/new_x/new_y); import name is "fpdf"
+pyshtools>=4.12       # Tsunakawa/Wieczorek surface magnetic SH expansion

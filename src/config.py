@@ -54,6 +54,7 @@ RESULTS_DIR: str = os.path.join(PROJECT_ROOT, "results")
 FIGURES_DIR: str = os.path.join(RESULTS_DIR, "figures")
 REAL_DATA_MANIFEST: str = "real_data_manifest.json"
 TERRAIN_VALIDITY_FILE: str = "tio2_mare_validity.tif"
+TIO2_QUANTITATIVE_FILE: str = "tio2_quantitative.tif"
 
 # Synthetic validation runs are deliberately isolated from the canonical real
 # inputs and publishable results.  Keeping the scenario in the path also
@@ -146,13 +147,21 @@ GRAVITY_BANDPASS_HIGH_KM: float = 40.0   # remove structure smaller than this
 # --------------------------------------------------------------------------- #
 # Target definition
 # --------------------------------------------------------------------------- #
-# Surface-field thresholds (nT) at which a pixel is called a "magnetic anomaly".
-# Reporting several removes the "results depend on one arbitrary cutoff" critique.
-BINARY_THRESHOLDS_NT: Tuple[float, ...] = (5.0, 10.0)
-PRIMARY_THRESHOLD_NT: float = 5.0
+# Surface-evaluated |B| thresholds (nT).  The v1.0.0 5/10 nT cutoffs were chosen
+# for the JAXA MA_GDOP 30 km altitude product (median ~0.55 nT) and are not
+# transferable to the Tsunakawa/Wieczorek surface field (median ~3 nT; strong
+# anomalies tens–hundreds of nT).  Primary 10 nT selects a rare-enough anomaly
+# class (~4% on quantitative Imbrian cells) while retaining enough positives for
+# spatially blocked CV; 25 nT is the registered sensitivity companion.
+BINARY_THRESHOLDS_NT: Tuple[float, ...] = (10.0, 25.0)
+PRIMARY_THRESHOLD_NT: float = 10.0
 # Target positive-class prevalence the synthetic generator calibrates toward
 # (~10% anomalous, matching the "~90% non-anomalous" premise of the proposal).
 TARGET_PREVALENCE: float = 0.10
+
+# LROC WAC TiO2 product: values below the official detection limit are set to
+# 1 wt% and do not represent measured abundance (WAC_TIO2_README.TXT).
+TIO2_DETECTION_LIMIT_WT: float = 2.0
 
 # --------------------------------------------------------------------------- #
 # Feature groups (single source of truth for every model / ablation)
@@ -322,6 +331,9 @@ class PipelineConfig:
     primary_threshold_nt: float = PRIMARY_THRESHOLD_NT
     # Which age mask to use for the *primary* analysis; sensitivity runs vary it.
     age_mask: str = "imbrian"  # one of {"imbrian", "imbrian_nectarian", "none"}
+    # Require LROC-quantitative TiO2 (>= detection limit).  Below-limit cells are
+    # a product floor, not continuous abundance measurements.
+    require_tio2_quantitative: bool = True
     # "fast" trims permutations/tuning for smoke tests; "full" honours the plan.
     mode: str = "full"
 

@@ -7,8 +7,8 @@ Nichols et al. (2026).  Given the tabular dataset, the module executes:
     descriptive analysis and preserves magnetic-field magnitude;
 
   * baselines (stratified & prior dummies, logistic regression, H2-only XGBoost);
-  * the full-model score, both default-config (for like-for-like comparison) and
-    nested-tuned (as a descriptive tuning diagnostic);
+  * the full-model score under the binding default-config XGBoost estimator
+    (nested tuning is retained only as a descriptive diagnostic);
   * a **spatial-rotation permutation test** (rolls the target grid in longitude,
     preserving autocorrelation) to get an empirical p-value;
   * an **ablation study** with a paired one-sided Wilcoxon test on per-fold scores
@@ -259,10 +259,18 @@ def run_permutation_test(
                 accepted_prevalence.append(float(prevalence))
                 accepted_rows.append(int(n_rows))
 
-    if len(accepted_scores) != n_perm:
+    if len(accepted_scores) < max(20, int(np.ceil(0.5 * n_perm))):
         raise RuntimeError(
-            "Could not obtain the requested number of rotations with the same evaluable "
-            f"fold count as observed ({len(accepted_scores)}/{n_perm})"
+            "Could not obtain enough rotations with the same evaluable "
+            f"fold count as observed ({len(accepted_scores)}/{n_perm}; "
+            f"need at least {max(20, int(np.ceil(0.5 * n_perm)))})"
+        )
+    if len(accepted_scores) < n_perm:
+        # Exhausted the fold-matched candidate pool.  Report the largest
+        # attainable matched-null sample rather than inventing replacements.
+        print(
+            f"  rotation null: accepted {len(accepted_scores)}/{n_perm} fold-matched "
+            f"shifts (candidate pool exhausted; using attainable matched sample)"
         )
     null_arr = np.asarray(accepted_scores, dtype=float)
     # +1 smoothing avoids a p-value of exactly 0 (best practice for MC tests).
@@ -521,12 +529,22 @@ def evaluate_pipeline(
 
     target = f"mag_binary_{int(cfg.primary_threshold_nt)}nT"
     df_primary = subset_by_age(df_all, cfg.age_mask)
+    if cfg.require_tio2_quantitative:
+        if "tio2_quantitative" not in df_primary.columns:
+            raise ValueError(
+                "require_tio2_quantitative=True but modeling_dataset lacks "
+                "tio2_quantitative; regenerate via preprocess_data"
+            )
+        df_primary = df_primary[df_primary["tio2_quantitative"] == 1].reset_index(drop=True)
     run_data_mode = (run_metadata or {}).get("data_mode")
     inherited_primary_folds = terrain_sensitivity.shared_spatial_fold_ids(
         df_primary, cfg.n_outer_folds
     )
-    print(f"Primary analysis: age_mask={cfg.age_mask}, target={target}, "
-          f"{len(df_primary):,} pixels, prevalence {df_primary[target].mean():.1%}")
+    print(
+        f"Primary analysis: age_mask={cfg.age_mask}, target={target}, "
+        f"tio2_quantitative={cfg.require_tio2_quantitative}, "
+        f"{len(df_primary):,} pixels, prevalence {df_primary[target].mean():.1%}"
+    )
 
     # 1. Transparent continuous-field analysis.  This preserves magnitude and
     # makes the TiO2 increment directly inspectable; it emits no pseudo-replicated
@@ -673,8 +691,8 @@ def evaluate_pipeline(
     core = core_analysis(df_primary, target, cfg)
     full_mean = core["baselines"]["XGB_Full_PR_AUC"]["mean"]
 
-    # 3. Nested-tuned legacy classifier diagnostic.
-    print("Running nested (spatially-tuned) cross-validation...")
+    # 3. Nested-tuned classifier diagnostic (not binding for criteria / nulls).
+    print("Running nested (spatially-tuned) cross-validation diagnostic...")
     groups = df_primary["spatial_block"].values
     tuned_scores, tuned_params = modeling.nested_cv_pr_auc(
         df_primary[config.ALL_FEATURES], df_primary[target], groups,
@@ -723,10 +741,10 @@ def evaluate_pipeline(
         df_all, grid_meta, target, cfg, h2_recovered,
     )
 
-    # 6. SHAP on the tuned legacy model (exploratory interpretation only).
-    print("Fitting final tuned model and computing SHAP...")
+    # 6. SHAP on the binding default-config estimator (same family as criteria).
+    print("Fitting binding default-config model and computing SHAP...")
     final_model = modeling.fit_final_model(
-        df_primary[config.ALL_FEATURES], df_primary[target], best_params, cfg.random_seed
+        df_primary[config.ALL_FEATURES], df_primary[target], {}, cfg.random_seed
     )
     shap_values, X_sample, importance = interpretability.compute_shap(
         final_model, df_primary[config.ALL_FEATURES], cfg.random_seed
@@ -807,8 +825,15 @@ def evaluate_pipeline(
         },
         "Method_Roles": {
             "transparent_continuous_regression": "descriptive complement with no binding headline",
-            "threshold_classifier": "legacy repository-plan primary estimate retained for traceability",
-            "xgboost_shap": "exploratory model diagnostics; not a substitute for independent regions",
+            "threshold_classifier_default_xgb": (
+                "binding estimator for observed scores, spatial nulls, ablation, "
+                "and decision criteria"
+            ),
+            "nested_tuned_xgb": "descriptive tuning diagnostic only; not used for criteria",
+            "xgboost_shap": (
+                "exploratory interpretation of the binding default-config model; "
+                "not a substitute for independent regions"
+            ),
             "injection_recovery": "conditional design-sensitivity analysis; not evidence about the Moon",
         },
         "Transparent_Continuous_Analysis": continuous,

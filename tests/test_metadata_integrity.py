@@ -31,6 +31,8 @@ VETTED_CFF_DOIS = {
     "10.1002/2014JE004785",          # Tsunakawa et al. 2015 (magnetic target)
     "10.1016/j.icarus.2017.06.013",  # Sato et al. 2017 (TiO2)
     "10.1126/science.1231530",       # Wieczorek et al. 2013 (GRAIL crust)
+    "10.5281/zenodo.3873648",        # Wieczorek T2015_449 SH expansion
+    "10.5281/zenodo.997347",         # GRAIL crustal thickness archive
 }
 
 # CFF 1.2.0 reference object `type` values we actually use / allow.

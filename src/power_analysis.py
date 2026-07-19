@@ -72,7 +72,7 @@ class PowerAnalysisConfig:
     strengths: Tuple[float, ...] = config.POWER_STRENGTHS
     n_simulations: int = config.N_POWER_SIMULATIONS
     age_mask: str = "imbrian"
-    target_column: str = "mag_binary_5nT"
+    target_column: str = f"mag_binary_{int(config.PRIMARY_THRESHOLD_NT)}nT"
     prevalence: float | None = None
     noise_method: str = "phase"
     estimator: str = "xgboost"
@@ -883,7 +883,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--strengths", type=float, nargs="+", default=list(PowerAnalysisConfig.strengths))
     parser.add_argument("--simulations", type=int, default=PowerAnalysisConfig.n_simulations)
     parser.add_argument("--age-mask", choices=("imbrian", "imbrian_nectarian", "none"), default="imbrian")
-    parser.add_argument("--target", default="mag_binary_5nT")
+    parser.add_argument(
+        "--target",
+        default=f"mag_binary_{int(config.PRIMARY_THRESHOLD_NT)}nT",
+    )
     parser.add_argument("--prevalence", type=float, default=None)
     parser.add_argument("--noise-method", choices=NOISE_METHODS, default="phase")
     parser.add_argument("--estimator", choices=ESTIMATORS, default="xgboost")

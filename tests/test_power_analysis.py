@@ -75,8 +75,8 @@ def _toy_frame(seed: int = 4) -> tuple[pd.DataFrame, dict]:
     order = np.argsort(flat["mag_anomaly"].to_numpy())
     target = np.zeros(len(flat), dtype=np.int8)
     target[order[-n_positive:]] = 1
-    flat["mag_binary_5nT"] = target
-    flat["mag_binary_10nT"] = 0
+    flat["mag_binary_10nT"] = target
+    flat["mag_binary_25nT"] = 0
     meta = {
         "height": height,
         "width": width,
@@ -168,7 +168,7 @@ def test_unestimable_variogram_cannot_pass_structural_adequacy(monkeypatch):
     )
     result = structural_diagnostics(
         df,
-        "mag_binary_5nT",
+        "mag_binary_10nT",
         meta,
         PowerAnalysisConfig(n_simulations=1, strengths=(0.0,)),
     )
@@ -180,9 +180,9 @@ def test_unestimable_variogram_cannot_pass_structural_adequacy(monkeypatch):
 @pytest.mark.parametrize("invalid_label", [0.5, "1"])
 def test_power_paths_reject_coerced_fractional_or_string_targets(invalid_label):
     df, meta = _toy_frame()
-    target = df["mag_binary_5nT"].astype(object)
+    target = df["mag_binary_10nT"].astype(object)
     target.iloc[0] = invalid_label
-    df["mag_binary_5nT"] = target
+    df["mag_binary_10nT"] = target
     cfg = PowerAnalysisConfig(
         strengths=(0.0,),
         n_simulations=1,
@@ -194,7 +194,7 @@ def test_power_paths_reject_coerced_fractional_or_string_targets(invalid_label):
     with pytest.raises(ValueError, match="non-null boolean/0/1"):
         run_power_analysis_frame(df, meta, cfg)
     with pytest.raises(ValueError, match="non-null boolean/0/1"):
-        structural_diagnostics(df, "mag_binary_5nT", meta, cfg)
+        structural_diagnostics(df, "mag_binary_10nT", meta, cfg)
 
 
 def test_rotation_noise_never_uses_identity_and_is_finite():
@@ -209,7 +209,7 @@ def test_rotation_noise_never_uses_identity_and_is_finite():
 def test_grouped_fold_audit_proves_group_separation_and_p_resolution():
     df, _ = _toy_frame()
     audit = grouped_fold_audit(
-        df["mag_binary_5nT"].to_numpy(), df["spatial_block"].to_numpy(), 5
+        df["mag_binary_10nT"].to_numpy(), df["spatial_block"].to_numpy(), 5
     )
     assert audit["groups_disjoint_in_every_split"] is True
     assert audit["actual_folds"] == 5

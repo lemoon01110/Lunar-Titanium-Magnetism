@@ -62,7 +62,7 @@ def test_cli_rejects_unconfigured_threshold(capsys):
         pipeline_main.parse_args(["--threshold", "7"])
     error = capsys.readouterr().err
     assert "invalid choice" in error
-    assert "5.0" in error and "10.0" in error
+    assert "10.0" in error and "25.0" in error
 
     with pytest.raises(ValueError, match="is not configured"):
         evaluation.evaluate_pipeline(cfg=config.PipelineConfig(primary_threshold_nt=7.0))
@@ -257,7 +257,7 @@ def test_benchmark_rotation_null_uses_the_same_h2_statistic(monkeypatch):
         "col_idx": cols.ravel(),
         "spatial_block": rows.ravel(),
         "dist_to_antipode_km": np.linspace(0, 1, height * width),
-        "mag_binary_5nT": (cols.ravel() % 3 == 0).astype(int),
+        "mag_binary_10nT": (cols.ravel() % 3 == 0).astype(int),
     })
     seen_features = []
 
@@ -279,7 +279,7 @@ def test_benchmark_rotation_null_uses_the_same_h2_statistic(monkeypatch):
     result = evaluation.run_permutation_test(
         frame,
         frame,
-        "mag_binary_5nT",
+        "mag_binary_10nT",
         {"width": width, "height": height},
         config.PipelineConfig(mode="fast"),
         real_full_mean=0.15,
@@ -329,10 +329,10 @@ def test_core_factories_receive_the_configured_seed(monkeypatch):
     )
     frame = pd.DataFrame({feature: [0.0, 1.0, 0.5, 1.5] for feature in config.ALL_FEATURES})
     frame["spatial_block"] = [0, 0, 1, 1]
-    frame["mag_binary_5nT"] = [0, 1, 0, 1]
+    frame["mag_binary_10nT"] = [0, 1, 0, 1]
     cfg = config.PipelineConfig(random_seed=17, n_outer_folds=2, mode="fast")
-    evaluation.run_baselines_and_full(frame, "mag_binary_5nT", cfg)
-    evaluation.run_ablation(frame, "mag_binary_5nT", cfg)
+    evaluation.run_baselines_and_full(frame, "mag_binary_10nT", cfg)
+    evaluation.run_ablation(frame, "mag_binary_10nT", cfg)
     assert seen and all(seed == 17 for _, seed in seen)
 
 
@@ -365,13 +365,14 @@ def test_evaluate_pipeline_preserves_optional_run_metadata(tmp_path, monkeypatch
     df = pd.DataFrame({feature: np.zeros(rows) for feature in config.ALL_FEATURES})
     df["age_class"] = config.AGE_IMBRIAN
     df["spatial_block"] = np.arange(rows)
-    df["mag_binary_5nT"] = [0, 1, 0]
+    df["mag_binary_10nT"] = [0, 1, 0]
     df["lon"] = [-1.0, 0.0, 1.0]
     df["lat"] = [-1.0, 0.0, 1.0]
     df["row_idx"] = [0, 0, 0]
     df["col_idx"] = [0, 1, 2]
     df["mag_anomaly"] = [1.0, 2.0, 1.5]
     df["tio2_terrain_valid"] = [1, 1, 1]
+    df["tio2_quantitative"] = [1, 1, 1]
     df.to_csv(processed / "modeling_dataset.csv", index=False)
     (processed / "grid_meta.json").write_text(json.dumps({"width": 3, "height": 1}))
 

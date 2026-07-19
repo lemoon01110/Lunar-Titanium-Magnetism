@@ -1,58 +1,22 @@
 {
-  "schema_version": "1.0",
-  "analysis": "matched_statistic_spatial_rotation_benchmark_calibration",
-  "input_artifacts": {
-    "modeling_dataset": {
-      "path": "data/processed/modeling_dataset.csv",
-      "sha256": "1b05c519343ed57e5bd1b9c1a443f7682a66be40cda1ef24311642222337559f"
-    },
-    "grid_metadata": {
-      "path": "data/processed/grid_meta.json",
-      "sha256": "2172fa55d69579dc854574a43f99069c2276768270d9cdc79dc329f7df018c56"
-    }
-  },
-  "target": "mag_binary_5nT",
-  "age_mask": "imbrian",
+  "analysis": "impact_antipode_benchmark_calibration",
   "features": [
     "dist_to_antipode_km"
   ],
-  "estimator": "repository-plan XGBoost defaults",
-  "spatial_cv": {
-    "folds": 5,
-    "block_size_deg": 30.0
-  },
   "null": {
-    "method": "non-identity longitudinal rotations of the binary target grid",
-    "n_rotations": 100,
-    "n_unique_longitude_shifts": 100,
-    "sampled_with_replacement": false,
-    "identity_shift_excluded": true,
-    "observed_valid_fold_count": 5,
+    "statistic_matches_observed_model": true,
+    "observed_valid_fold_count": 4,
     "accepted_rotation_valid_fold_counts_all_equal_observed": true,
-    "n_candidate_shifts_evaluated": 125,
-    "n_rejected_for_fold_count_mismatch": 12,
-    "accepted_rotation_prevalence": {
-      "min": 0.007686320295777389,
-      "mean": 0.014274177855613935,
-      "max": 0.02276707530647986
-    },
-    "seed": 42,
-    "plus_one_p_value_smoothing": true,
-    "statistic_matches_observed_model": true
+    "n_candidate_shifts_evaluated": 383,
+    "n_rejected_for_fold_count_mismatch": 297,
+    "n_permutations": 86
   },
   "result": {
-    "observed_h2_pr_auc": 0.1105789749883233,
-    "null_mean_pr_auc": 0.03197020246622187,
-    "null_std_pr_auc": 0.02672840763633233,
-    "null_95th_pr_auc": 0.10683156558832459,
-    "empirical_p_value": 0.039603960396039604,
-    "recovered_above_matched_spatial_null": true
-  },
-  "correction": "The earlier comparison of the one-feature H2 score with the full-model null used different statistics and was invalid. This artifact calibrates H2 against the same one-feature statistic under rotation.",
-  "limitations": [
-    "The six-basin distance encoding is an approximate literature-motivated benchmark, not exhaustive ground truth for impact magnetization.",
-    "Benchmark recovery does not establish adequate power for the surface-TiO2 proxy or repair the approximately one effective spatial region.",
-    "The result is conditional on this map, age mask, block geometry, estimator, fold-comparability screen, and rotation construction.",
-    "Rotated prevalence varies where the shifted target intersects the fixed Imbrian mask; the accepted range is reported explicitly."
-  ]
+    "observed_pr_auc": 0.2718203509274121,
+    "null_mean_pr_auc": 0.1558770450639345,
+    "null_95th_pr_auc": 0.3766213814342223,
+    "null_std_pr_auc": 0.10386879325587545,
+    "empirical_p_value": 0.1724137931034483,
+    "recovered_above_matched_spatial_null": false
+  }
 }

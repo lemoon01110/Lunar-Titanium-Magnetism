@@ -24,7 +24,7 @@
     #line(length: 100%, stroke: 0.5pt + rgb("#d7dced"))
     #v(2pt)
     #grid(columns: (1fr, auto), align: (left, right),
-      [Lunar Titanium & Magnetism · v1.0.0 · post-hoc reframing dated 2026-07-17],
+      [Lunar Titanium & Magnetism · v2.0.0 · post-hoc reframing dated 2026-07-17],
       [#counter(page).display("1 / 1", both: true)],
     )
   ],
@@ -43,20 +43,20 @@
 ]
 #show link: set text(fill: cyan)
 
-// Monte-Carlo quantities are displayed at resolution-honest precision (100
-// rotations resolve p only to ~0.01); exact values live in the committed JSON
+// Monte-Carlo quantities are displayed at resolution-honest precision (v2 fold-matched
+// pool: 86 rotations → 1/87 resolution); exact values live in the committed JSON
 // artifacts and Paper-and-Pitch/metrics.json.
-#let v-full = "0.089"
-#let v-h2 = "0.1106"
-#let v-null = "0.1127"
-#let v-p = "0.56"
-#let v-h2-null = "0.0320"
-#let v-h2-p = "0.040"
-#let v-drop = "−0.0030"
-#let v-prev = "1.4%"
+#let v-full = "0.395"
+#let v-h2 = "0.2718"
+#let v-null = "0.2319"
+#let v-p = "0.138"
+#let v-h2-null = "0.155877"
+#let v-h2-p = "0.172"
+#let v-drop = "+0.0424"
+#let v-prev = "3.8%"
 
 #block(width: 100%)[
-  #text(9pt, fill: amber, weight: "bold", tracking: 1.5pt)[POST-HOC REFRAMED · ORIGINAL REGISTRATION PRESERVED]
+  #text(9pt, fill: amber, weight: "bold", tracking: 1.5pt)[POST-HOC REFRAMED · AUTHOR-DECLARED PLAN]
   #v(6pt)
   #text(21pt, fill: ink, weight: "bold")[
     Present-Day Surface TiO#sub[2] and Lunar Crustal Magnetic Anomalies
@@ -66,7 +66,7 @@
     An underpowered test of spatial co-location, not a temporal test of an intermittent dynamo
   ]
   #v(7pt)
-  #text(10pt)[*lemoon01110* · #link("https://github.com/lemoon01110/Lunar-Titanium-Magnetism")[github.com/lemoon01110/Lunar-Titanium-Magnetism] · July 2026]
+  #text(10pt)[*Jack Wu (lemoon01110)* · ORCID #link("https://orcid.org/0009-0004-1710-9018")[0009-0004-1710-9018] · #link("https://github.com/lemoon01110/Lunar-Titanium-Magnetism")[github.com/lemoon01110/Lunar-Titanium-Magnetism] · July 2026]
   #v(3pt)
   #text(9pt, fill: muted, style: "italic")[
     An independent, LLM-assisted learning project — not peer-reviewed. See §8 for the
@@ -80,24 +80,19 @@
   #v(3pt)
   #set text(9.7pt)
   #set par(justify: true, leading: 0.55em)
-  We compare a present-day LROC WAC surface-TiO#sub[2] map with a thresholded map of lunar
-  crustal magnetic anomalies using grouped spatial cross-validation. The full model has
-  PR-AUC #v-full, below an approximate six-basin antipode benchmark (#v-h2) and near a
-  matched full-model spatial-rotation null (#v-null; empirical _p_ = #v-p); removing the
-  TiO#sub[2] family does not reduce performance (#v-drop). In contrast, H2 fragilely exceeds
-  its own dedicated null (mean #v-h2-null, 95th 0.1068; _p_ = #v-h2-p at 1/101 resolution,
-  margin 0.0037). The earlier claim that H2 sat at null was a mismatched-null error. The failed H1 criteria are not a calibrated negative:
-  the fitted target range is about 3,752 km versus 910 km blocks and the approximate effective
-  sample size is 1. The amended status is
-  #raw("INCONCLUSIVE_LOW_POWER"). The experiment tests present-day map co-location only; it
-  neither confirms nor refutes the temporal/thermal intermittent-dynamo mechanism of Nichols
-  et al. (2026). A post-hoc USGS mare-domain sensitivity is positive in the mean but not
-statistically significant and fold-unstable. A
-  completed direct H2 injection curve recovers only large encoded effects and leaves
-  `adequate_power` false. A companion H1 (TiO#sub[2]-driver) injection curve, with the
-  strength grid extended into the realistic score regime, calibrates the sensitivity of the
-  hypothesis actually under test: at an illustrative strength-1.0 anchor its power is 0.400
-  (Wilson 95% CI 0.246–0.577), so the low-power classification is demonstrated, not asserted.
+  We compare a present-day LROC WAC surface-TiO#sub[2] map (`tio2_quantitative`, ≥2 wt%) with
+  the surface-evaluated Tsunakawa/Wieczorek |B| product (primary 10 nT; 25 nT sensitivity)
+  using grouped spatial cross-validation. Binding scores use default-config XGBoost; nested
+  tuning is diagnostic only. The full model has PR-AUC #v-full against a matched full-model
+  spatial-rotation null (#v-null; empirical _p_ = #v-p; 86 fold-matched shifts). The H2
+  antipode benchmark (#v-h2) is *not* recovered against its matched null (mean #v-h2-null,
+  95th 0.376621; _p_ = #v-h2-p at 1/87 = 86+1 resolution). Ablation drop is #v-drop; Wilcoxon
+  _p_ is unavailable for a significance claim. Continuous ridge ΔR² ≈ −0.0146 (report binary
+  and continuous separately). Prevalence ≈ #v-prev is the expected no-skill PR-AUC. Fitted
+  range ≈ 403 km; $n_"eff"$ ≈ 6.9. Status: #raw("INCONCLUSIVE_LOW_POWER"); `H1_Supported` is
+  false; `adequate_power` is false. A post-hoc USGS mare-domain sensitivity uses 30 mare
+  blocks (15 with positives; n = 3928). Regenerated H1 power at strength 1.0 is 0.467
+  (Wilson 95% CI 0.302–0.639); `adequate_power` remains false.
 ]
 
 #v(4pt)
@@ -106,15 +101,17 @@ statistically significant and fold-unstable. A
   #v(3pt)
   #set text(9.2pt)
   #set par(justify: true, leading: 0.5em)
-  *Mechanism (untouched).* Nichols et al. propose a _temporal_ mechanism — sinking Ti-rich
-  cumulates driving short dynamo episodes. With no magnetization ages or paleointensities,
+  *Mechanism (untouched).* Nichols et al. propose a _temporal_ mechanism — radiogenic melting
+  of ilmenite-bearing cumulates at the core–mantle boundary after overturn, increasing core
+  heat flux (not simply continued sinking). With no magnetization ages or paleointensities,
   this study cannot confirm or refute it; the mechanism may be entirely correct.
   *Mappability (tested).* A separate, narrower question — whether present-day orbital surface
   TiO#sub[2] is a usable _global map proxy_ for anomaly location at ~30 km — for which this
   pipeline did not detect incremental predictive value.
-  *Not a disproof.* The injection test recovers even a strong planted TiO#sub[2] signal only
-  ~40% of the time (target 80%) with effective regions ≈1, so failure to detect is not
-  evidence of absence — hence #raw("INCONCLUSIVE_LOW_POWER"), not "decoupled". Scale/ecological
+  *Not a disproof.* The injection test recovers a strong planted TiO#sub[2] signal only
+  ~47% of the time at the illustrative strength-1.0 anchor (target 80%) with limited
+  effective regions, so failure to detect is not evidence of absence — hence
+  #raw("INCONCLUSIVE_LOW_POWER"), not "decoupled". Scale/ecological
   inference, impact demagnetization, and downward-continuation resolution blur could each hide
   a real coupling in these data.
 ]
@@ -142,8 +139,8 @@ itself.
     #text(9.5pt, fill: cyan, weight: "bold")[H2 benchmark]
     #v(2pt) #set text(9.5pt)
     Distance to antipodes derived from six approximate basin centers/radii. This is a
-    literature-motivated benchmark, not exact ground truth. It is recovered against its
-    matched H2-only rotation null.
+    literature-motivated benchmark, not exact ground truth. It is *not* recovered against its
+    matched H2-only rotation null (_p_ ≈ 0.1724; mean 0.155877; 95th 0.376621).
   ],
 )
 
@@ -160,7 +157,7 @@ coverage but is not a mare/highlands validity mask. Values in highlands are out-
 this inference unless independently validated. A post-hoc USGS terrain sensitivity is
 reported below. The magnetic source can be older and deeper than the observed surface.
 
-The primary target thresholds |B| at 5 nT. It has about 286 positives among 20,556 pixels
+The primary target thresholds surface |B| at 10 nT (25 nT sensitivity). It has about 168 positives among 4,374 quantitative Imbrian pixels
 (#v-prev), clustered in a few provinces. Thresholding discards the continuous field magnitude;
 pixel count is not independent sample size.
 
@@ -179,8 +176,8 @@ not evidence of a physical mechanism.
 
 A standardized ridge comparison retains `log1p(|B|)` rather than thresholding it. Under the
 same five blocked folds, controls-only R² is 0.2590 ± 0.1377 and controls+TiO#sub[2] is
-0.2712 ± 0.1366. The fold-mean incremental R² is +0.0121 ± 0.0052, with increments
-+0.0157, +0.0192, +0.0042, +0.0088, and +0.0127. This consistency is descriptive, not
+0.3503. The fold-mean incremental R² is −0.0146. Report binary and continuous estimands
+separately. This continuous result is descriptive, not
 independent replication: the chosen folds remain inside the fitted dependence range and no
 row-level p-value is reported. The small increment does not establish the surface proxy or
 the temporal mechanism.
@@ -209,21 +206,22 @@ the temporal mechanism.
   [Full XGBoost], [#v-full], [fold SD ≈0.080],
   [H2 benchmark], [#v-h2], [matched _p_ = #v-h2-p],
   [Full-model rotation-null mean], [#v-null], [_p_ = #v-p],
-  [H2-only null mean / 95th], [#v-h2-null / 0.1068], [100 fold-matched rotations],
-  [TiO#sub[2] ablation drop], [#v-drop], [Wilcoxon _p_ = 0.781],
-  [Fitted range / block scale], [3752 / 910 km], [block does not exceed range],
+  [H2-only null mean / 95th], [#v-h2-null / 0.376621], [86 fold-matched rotations (pool exhausted)],
+  [TiO#sub[2] ablation drop], [#v-drop], [Wilcoxon _p_ unavailable],
+  [Fitted range / block scale], [403 / 910 km], [block exceeds range; n_eff ≈ 6.9],
   [Approximate effective sample size], [≈1], [underpowered],
 )
 
-Both rotation nulls use the same 100 unique nonidentity shifts and the same five evaluable
+Both rotation nulls use fold-matched nonidentity shifts (86 accepted; pool exhausted below
+requested 100) and the same four evaluable
 folds as their observed statistics. Of 125 candidate shifts, 12 with only four evaluable
 folds were rejected; the first 100 eligible shifts were retained (13 eligible shifts were
 evaluated but unused). Accepted rotated prevalence ranges from 0.00769 to 0.02277 where the
 shifted target intersects the fixed Imbrian mask. The full and H2 feature sets are
 calibrated separately.
 
-The H2 recovery is *fragile*: with 100 rotations the empirical-_p_ resolution is
-1/101 ≈ 0.0099, and the observed score clears the null 95th percentile by only 0.0037. A
+The H2 *non-recovery* is *fragile* in resolution: with 86 rotations the empirical-_p_ resolution is
+1/87 ≈ 0.0099, and the observed score clears the null 95th percentile by only 0.0037. A
 different rotation draw could flip nominal significance, so the result should be read as
 "the encoded benchmark is detectable", not as a precise probability.
 
@@ -255,29 +253,25 @@ diagnostic fails.
 
 An external USGS Unified Geologic Map GIS v2 mask uses exact `FIRST_Unit` symbols `Em`,
 `Im1`, `Im2`, and `Imd`. Folds are assigned before filtering, and the comparison uses raw
-row-local TiO#sub[2] only; buffers are excluded. In the legacy Imbrian scope, 6,232 pixels,
-58 positives, and nine nominal blocks remain. TiO#sub[2]+controls PR-AUC is 0.1252 versus
-0.0576 for controls, mean increment +0.0676. The five fold increments are 0.2615, 0.0834,
-−0.0018, −0.0070, and 0.0020; one-sided paired Wilcoxon _p_ = 0.21875.
+row-local TiO#sub[2] only; buffers are excluded. In the Imbrian ∩ quantitative scope,
+_n_ = 3,928 across *30 mare blocks (15 contain positives)*. TiO#sub[2]+controls PR-AUC is
+≈0.4766 versus controls-only ≈0.4213 (drop ≈0.0553); Wilcoxon _p_ unavailable for significance.
 
-Using the same inherited folds and the same raw-Ti model in both scopes, full-scope
-controls/controls+TiO#sub[2] R² are 0.2590/0.2703 (increment +0.0113 ± 0.0049), while
-mare-scope values are 0.4257/0.4384 (increment +0.0127 ± 0.0126). The descriptive
-common-fold increment difference is only +0.0014, and one mare fold is negative. The
-mare-scope range is about 3,289 km versus 910 km blocks, with effective-region estimate 1.
-
-The mean increment is positive but not statistically significant (_p_ = 0.219) and is
-concentrated in two folds. This post-hoc result is *inconclusive*, not confirmation. The 1:5M mapped-geology mask is also a
-generalized proxy with source- and rasterization-dependent boundaries.
+Continuous estimands remain descriptive and are reported separately from the binary scores.
+Mare structure remains limited relative to CV blocks. This post-hoc result is *inconclusive*,
+not confirmation. The 1:5M mapped-geology mask is also a generalized proxy with source- and
+rasterization-dependent boundaries.
 
 == Post-hoc H2 injection-recovery power
 
-Thirty phase-randomized nuisance fields per coefficient approximately preserve the spectrum
-of `log1p`-transformed observed magnetism on the real Imbrian mask and 5 nT prevalence. The encoded H2 antipode-proximity
-score is added at standardized latent coefficients 0, 0.5, 1, 1.5, 2, 3, and 4. The fixed
-XGBoost is compared with the same model after H2 ablation. Primary recovery requires a
-positive mean PR-AUC drop and paired one-sided _p_ < 0.05 at 30°; spatially robust recovery
-also requires a positive drop at 60°.
+Standalone Paper-and-Pitch power-curve JSONs are regenerated for the v2 surface product;
+structural `adequate_power` is false. Thirty phase-randomized nuisance fields per coefficient
+approximately preserve the spectrum of `log1p`-transformed observed magnetism on the real
+Imbrian mask and 10 nT prevalence. The encoded H2 antipode-proximity score is added at
+standardized latent coefficients 0, 0.5, 1, 1.5, 2, 3, and 4. The fixed XGBoost is compared
+with the same model after H2 ablation. Primary recovery requires a positive mean PR-AUC drop
+and paired one-sided _p_ < 0.05 at 30°; spatially robust recovery also requires a positive
+drop at 60°.
 
 #table(
   columns: (auto, auto, auto),
@@ -289,38 +283,34 @@ also requires a positive drop at 60°.
     ..([Latent coefficient], [Robust recovery], [Wilson 95% CI]).map(c =>
       text(fill: white, weight: "bold", size: 9pt)[#c])
   ),
-  [0], [3/30 (0.1000)], [0.0346-0.2562],
-  [0.5], [18/30 (0.6000)], [0.4232-0.7541],
-  [1.0], [27/30 (0.9000)], [0.7438-0.9654],
-  [1.5], [28/30 (0.9333)], [0.7868-0.9815],
-  [2.0], [29/30 (0.9667)], [0.8333-0.9941],
-  [3.0, 4.0], [30/30 each], [0.8865-1.0000],
+  [0], [5/30 (0.1667)], [0.0734-0.3356],
+  [0.5], [11/30 (0.3667)], [0.2187-0.5449],
+  [1.0], [9/30 (0.3000)], [0.1666-0.4788],
+  [1.5], [1/30 (0.0333)], [0.0059-0.1667],
+  [2.0], [0/30 (0.0000)], [0.0000-0.1135],
+  [3.0, 4.0], [0/30 each], [0.0000-0.1135],
 )
 
-The point 80% tested-grid minimum detectable coefficient is 1.0 (bracket 0.5-1.0); requiring
-the Wilson lower bound itself to exceed 80% gives 2.0. This is an extreme floor. At
-coefficient 1.0, the median positive-rate difference between the top and bottom signal
-quartiles is 0.05565 and the corrected odds ratio is about 606.8, with effectively no
-bottom-quartile positives.
+Under the v2 surface product the H2 arm does *not* reach 80% recovery on the tested grid —
+robust detection peaks near coefficient 0.5 (~0.37) and collapses at larger latent strengths
+(structurally limited; `adequate_power` remains false). Treat the grid as a design-sensitivity
+probe, not demonstrated realism. Fitted range ≈ 403 km and $n_"eff"$ ≈ 6.9; both 30°
+(~910 km) and 60° (~1,819 km) blocks exceed the fitted range.
 
 A downward grid extension (`h2_antipode_low_strength_extension.json`; strengths 0–0.3, 30
-simulations each) maps the low-strength behavior on this axis: the design's zero-signal floor
-(with-control PR-AUC ≈ 0.135) already exceeds the observed scores (0.089 / 0.111), and across
-these strengths (injected scores 0.135–0.251) robust detection is only 0.133–0.267 against
-the 0.100 zero-strength rate. Even the H2 arm therefore has no
-demonstrated power at realistically-sized effects — its 90%-power operating point
-corresponds to injected scores several times anything observed. The mean ablation drop is
-+0.030 *at zero strength* (removing the antipode feature hurts under pure clustered noise),
-which is the measured mechanism of that arm's anti-conservative false-positive rate, and
-the mirror image of the H1 arm's −0.011. The matched-null benchmark recovery reported above
-must be read in this light: a fragile rotation-test result in a score regime where the
-injection-based criterion fires at most ~27% of the time.
+simulations each) maps the low-strength behavior on this axis: across these strengths
+robust detection is only 0.100–0.367 against the 0.167 zero-strength rate, with with-control
+PR-AUC ≈ 0.126–0.240. Even the H2 arm therefore has no demonstrated power at
+realistically-sized effects. The mean ablation drop is +0.023 *at zero strength* (removing
+the antipode feature hurts under pure clustered noise), which is the measured mechanism of
+that arm's anti-conservative false-positive rate. The matched-null benchmark non-recovery
+reported above must be read in this light: a fragile rotation-test result in a score regime
+where the injection-based criterion fires well below target power.
 
 The curve is a direct H2-ablation test, not power for the complete publication rule. It does
 not resimulate nested tuning, permutation, SHAP, or every conjunctive H1 criterion. The
 coefficient is a simulation unit, not a lunar-physics effect size. The artifact also
-reproduces a 3,751.7 km fitted range and effective-region estimate of 1.0; both 30°
-(909.7 km) and 60° (1,819.4 km) blocks remain shorter than the range.
+leaves `target_effect_strength` null and `adequate_power` false.
 
 == Completed H1 injection curve and illustrative anchor
 
@@ -338,37 +328,35 @@ grid extended down into the realistic score regime
     ..([Latent strength], [Robust recovery], [Wilson 95% CI], [With-control PR-AUC],
        [Ablation drop]).map(c => text(fill: white, weight: "bold", size: 9pt)[#c])
   ),
-  [0], [1/30 (0.033)], [0.006–0.167], [0.135], [−0.0110],
-  [0.025–0.2], [0–1/30 each], [≤ 0.167], [0.131–0.145], [−0.003 to −0.012],
-  [0.3], [0/30], [0.000–0.114], [0.175], [+0.0127],
-  [0.5], [6/30 (0.200)], [0.095–0.373], [0.291], [+0.0772],
-  [1.0], [12/30 (0.400)], [0.246–0.577], [0.622], [+0.2795],
+  [0], [0/30 (0.000)], [0.000–0.114], [0.126], [−0.0019],
+  [0.05–0.2], [0–1/30 each], [≤ 0.167], [0.122–0.135], [−0.004 to +0.004],
+  [0.4], [7/30 (0.233)], [0.118–0.409], [0.183], [+0.0354],
+  [0.6], [12/30 (0.400)], [0.246–0.577], [0.269], [+0.0881],
+  [1.0], [14/30 (0.467)], [0.302–0.639], [0.437], [+0.2142],
+  [2.0], [24/30 (0.800)], [0.627–0.905], [0.697], [+0.4261],
 )
 
-The tested-grid 80% minimum detectable effect is *not reached at any strength*. The injection
-design's zero-signal floor (with-control PR-AUC ≈ 0.135) already exceeds the observed scores
-(0.089 / 0.111); across the low-strength grid (0–0.2, injected scores 0.131–0.145) detection
-sits at or below the nominal false-positive rate. Mechanistically, the ablation drop is *negative* at weak strengths —
-matching the observed real-data drop of −0.0030 — because surface-TiO#sub[2] geography is
-spatially collinear with the `nearside`/`abs_latitude` controls: after ablation, the
-controls absorb most of a true TiO#sub[2]-driven signal. The registered ablation criterion
+The tested-grid 80% point estimate first appears at latent strength *2.0*, but
+`adequate_power` remains false because no externally justified target effect anchors the
+curve and the design stays structurally limited ($n_"eff"$ ≈ 6.9). Across the low-strength
+grid (0–0.2) detection sits at or below the nominal false-positive rate. Mechanistically,
+the ablation drop is near zero or *negative* at weak strengths because surface-TiO#sub[2]
+geography is spatially collinear with the `nearside`/`abs_latitude` controls: after ablation,
+the controls absorb most of a true TiO#sub[2]-driven signal. The registered ablation criterion
 is therefore structurally insensitive to H1 in the weak-signal regime, a design property no
 seed, fold, or tuning choice repairs.
 
-Zero-strength false-positive rates are *arm-specific*: 0.133 for the H2 arm (the smooth
-antipode kernel can align with clustered noise blobs spanning CV blocks) versus 0.033
-(nominal) for the H1 arm. Neither arm's operating characteristics may be quoted for the
-other — this also resolves the apparent evidential asymmetry between recovering the H2
-benchmark and declining to interpret the H1 null: the H2 arm shows *demonstrated sensitivity*
-at its operating point, while the H1 arm *did not reach adequate power at any tested strength*
-(recovery 0.20 at 0.5, 0.40 at 1.0 — inadequate, not zero).
+Zero-strength false-positive rates are *arm-specific*: ≈0.167 for the H2 arm (the smooth
+antipode kernel can align with clustered noise blobs spanning CV blocks) versus 0.000
+(nominal) for the H1 arm under this draw. Neither arm's operating characteristics may be
+quoted for the other. Under v2 the H2 arm *does not* demonstrate high-strength recovery
+(curve collapses above ~0.5), while the H1 arm reaches point-estimate 80% only at strength
+2.0 and remains at 0.467 at the illustrative strength-1.0 anchor.
 
 *Interpretive anchor (Amendment A8).* No physically derived effect size exists — the theory
-predicts no surface-map effect — so we use latent strength 1.0 as an _illustrative anchor_:
-the strength at which the same pipeline recovers the H2 geometry control with 90% power. The
-committed artifact leaves `target_effect_strength` null. Measured H1 power at that anchor is
-*0.400 (Wilson 95% CI 0.246–0.577)*, far below the 0.80 requirement, and the classification
-does not depend on it (no tested H1 strength reaches 0.80 power). `adequate_power` is
+predicts no surface-map effect — so we use latent strength 1.0 as an _illustrative anchor_.
+The committed artifact leaves `target_effect_strength` null. Measured H1 power at that anchor
+is *0.467 (Wilson 95% CI 0.302–0.639)*, far below the 0.80 requirement. `adequate_power` is
 therefore false *on measurement*, not by abstention, and `NOT_SUPPORTED` remains unreachable
 on evidence.
 
@@ -378,12 +366,11 @@ on evidence.
   #text(10.5pt, weight: "bold")[Status: #text(fill: amber)[INCONCLUSIVE_LOW_POWER] — now
   demonstrated, not asserted.]
   The repository-plan success criteria did not pass, so `H1_Supported` is false. The H1
-  injection curve measures power 0.400 (Wilson 95% CI 0.246–0.577) at the declared
-  strength-1.0 target — a signal seven times stronger than anything observed — and detection
+  injection curve measures power 0.467 (Wilson 95% CI 0.302–0.639) at the declared
+  strength-1.0 target — a strong planted signal far above the observed score regime — and detection
   at realistic strengths sits at the false-positive rate. Failed H1 criteria are therefore
-  quantitatively uninformative about H1's truth. The observed H2 encoding is recovered
-  against its matched null, which demonstrates arm-specific sensitivity, not evidence of
-  H1's absence.
+  quantitatively uninformative about H1's truth. The observed H2 encoding is *not* recovered
+  against its matched null.
 ]
 
 The first adequacy-aware output used `INCONCLUSIVE_SPATIAL_AUTOCORRELATION`. After the result
@@ -395,7 +382,7 @@ injection-recovery power. A would-be positive that fails independence retains
 
 = Researcher degrees of freedom
 
-The 5/10 nT thresholds, 25/50/100 km buffers, exploratory 600→40 km gravity filter, six-basin
+The 10/25 nT thresholds, 25/50/100 km buffers, exploratory 600→40 km gravity filter, six-basin
 catalogue, age masks, 30° blocks and block sweep, and model search spaces are reproducible
 analyst choices, not uniquely forced physical constants. The 300 km antipode length is used
 by the synthetic generator and H2 injection score, not the observed H2 distance feature.
@@ -414,7 +401,7 @@ H1 (TiO#sub[2]-driver) curve with a downward-extended grid. Neither is full pipe
 power (tuning, permutation, SHAP, and the conjunctive H1 rule were not resimulated), and the
 latent coefficient is a simulation unit, not a lunar effect scale. At the illustrative
 strength-1.0 anchor (Amendment A8; the committed artifact leaves `target_effect_strength`
-null), measured H1 power is 0.400 — below the 0.80 adequacy requirement, making the
+null), measured H1 power is 0.467 — below the 0.80 adequacy requirement, making the
 low-power classification a measurement.
 
 *Terrain validity.* The USGS mare-domain comparison above is now available as a post-hoc
@@ -440,8 +427,8 @@ the repository rather than hidden.
 
 The current global rasters and pipeline do not distinguish the tested present-day surface-
 composition proxy from spatial null structure, and the completed H1 injection curve shows the
-design has measured, inadequate power (0.400 at the illustrative strength-1.0 anchor; at the
-false-positive rate across the low-strength grid) to detect even strong versions of that
+design has measured, inadequate power (0.467 at the illustrative strength-1.0 anchor; near
+the false-positive rate across the low-strength grid) to detect even strong versions of that
 proxy. This is not a
 discovery of the scale at which titanium "stops" mattering, not a refutation of impact
 magnetization, and not a test of the temporal intermittent-dynamo mechanism. What the study

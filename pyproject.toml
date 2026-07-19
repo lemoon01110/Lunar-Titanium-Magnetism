@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lunar-titanium-magnetism"
-version = "1.0.0"
+version = "2.0.0"
 description = "An underpowered spatial co-location analysis of surface TiO2 and lunar crustal magnetism."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
-authors = [{ name = "lemoon01110" }]
+authors = [{ name = "Jack Wu (lemoon01110)" }]
 keywords = ["planetary-science", "lunar-magnetism", "geospatial-ml", "xgboost", "reproducible-research"]
 
 # Runtime dependencies are pinned by floor in requirements.txt (kept as the
@@ -26,6 +26,7 @@ dependencies = [
     "pyproj>=3.6",
     "joblib>=1.3",
     "fpdf2>=2.7.6",
+    "pyshtools>=4.12",
 ]
 
 [project.optional-dependencies]

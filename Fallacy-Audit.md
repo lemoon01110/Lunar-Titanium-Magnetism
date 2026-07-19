@@ -65,7 +65,8 @@ intermittent dynamos, impact remanence, impact-plasma amplification, and other m
 coexist. The H2 predictor uses six rounded basin centers/radii and a single distance feature.
 
 **Disposition.** H2 is a literature-motivated **benchmark encoding**, not exact ground truth.
-Its recovery against the matched H2-only null validates sensitivity to that encoding; it does
+Its **non-recovery** against the matched H2-only null (*p* ≈ 0.1724; mean 0.155877; 95th
+0.376621) restrains strong negative inference about H1; it does
 not prove impact-related magnetization. Failure to recover it would not have refuted that
 mechanism, and outperforming it would not prove an intermittent dynamo.
 
@@ -87,23 +88,22 @@ highland values scientifically valid.
 **Disposition.** Highlands are treated as out-of-domain for quantitative TiO₂ inference until
 validated. The primary joint-valid footprint is not a mare-validity mask. The implemented
 USGS GIS v2 mask uses `FIRST_Unit` values `Em`, `Im1`, `Im2`, and `Imd`, raw TiO₂ only, and
-folds assigned before filtering. Within the legacy Imbrian scope it leaves 6,232 pixels,
-58 positives, and nine blocks. TiO₂+controls scores 0.1252 versus 0.0576 for controls, but
-fold increments [0.2615, 0.0834, −0.0018, −0.0070, 0.0020] give one-sided paired
-Wilcoxon *p* = 0.21875. The positive mean is not statistically significant, is driven by
-two folds, and is inconclusive.
+folds assigned before filtering. Within the Imbrian ∩ quantitative scope it leaves
+**3,928** pixels across **30 mare blocks (15 contain positives)**. TiO₂+controls scores
+≈0.4766 versus ≈0.4213 for controls (drop ≈0.0553). Wilcoxon *p* is unavailable for a
+significance claim. The positive mean drop is not treated as significant and is inconclusive.
 
 ## F8 — Effective sample size and pseudoreplication
 
-**Problem.** The raster contains 20,556 rows but the target is spatially clustered. The fitted
-range is ≈3,752 km, the primary block scale is ≈910 km, `block_exceeds_range` is false, and
-the shipped approximation gives `n_eff ≈ 1`. Treating pixels or even 72 nominal blocks as
-independent precision is pseudoreplication.
+**Problem.** The primary quantitative Imbrian raster contains 4,374 rows but the target is
+spatially clustered. The fitted range is ≈403 km, the primary block scale is ≈910 km,
+`block_exceeds_range` is true, and the shipped approximation gives `n_eff ≈ 6.9`. Treating
+pixels as independent precision is still pseudoreplication.
 
 **Disposition.** The primary evidence status is `INCONCLUSIVE_LOW_POWER`. Pixel-level scores,
 Wilcoxon results, FDR cells, SHAP rankings, and bootstrap intervals are descriptive under this
 adequacy failure; none rescues an inferential sample size of approximately one. The completed
-H2 injection artifact reproduces the same ≈3,751.7 km range and `n_eff = 1.0`; both its 30°
+H2 injection / spatial diagnostics under v2 report ≈403 km range and `n_eff ≈ 6.9`; 30°
 (≈909.7 km) and 60° (≈1,819.4 km) holdouts remain shorter than the fitted range.
 
 ## F9 — Post-result decision-rule change
@@ -141,42 +141,45 @@ one-feature H2 statistic with the rotation-null distribution of the 13-feature f
 Those statistics have different flexibility and null behavior; the comparison could not
 establish H2 benchmark failure.
 
-**Disposition.** A dedicated H2-only test using 100 unique nonidentity rotations gives
-observed PR-AUC 0.110579, null mean 0.031970, null 95th percentile 0.106832, and
-+1-smoothed empirical *p* = 0.039604. The encoded observed H2 benchmark is therefore
-recovered. The matched full-model null instead has mean 0.112697 and *p* = 0.564356. Each
-accepted rotation has the same five evaluable folds as the observed statistic; 12 of 125
-candidate shifts were rejected for having only four. The earlier 0.110149 comparison used
-the full-model statistic and repeated sampled shifts, so it could not calibrate H2. H2 remains
+**Disposition.** A dedicated H2-only test using fold-matched nonidentity rotations (86
+accepted; pool exhausted below requested 100) gives observed PR-AUC 0.271820, null mean
+0.155877, null 95th percentile 0.376621, and +1-smoothed empirical *p* = 0.172414. The
+encoded observed H2 benchmark is therefore **not** recovered. The matched full-model null
+instead has mean 0.231862 and *p* = 0.137931. Each
+accepted rotation has the same four evaluable folds as the observed statistic; many of 383
+candidate shifts were rejected for fold-count mismatch. H2 remains
 an approximate six-basin encoding rather than exact ground truth, but the former benchmark-
 failure claim is withdrawn.
 
 The completed post-hoc injection analysis independently supplies synthetic H2 truth on the real mask and
-predictor maps. Across 30 phase surrogates per coefficient, spatially robust direct-ablation
-recovery is 3/30 at zero (0.1000; Wilson 95% CI 0.0346-0.2562), 18/30 at 0.5,
-27/30 at 1.0, 28/30 at 1.5, 29/30 at 2.0, and 30/30 at 3.0 and 4.0. The point 80%
-tested-grid minimum is coefficient 1.0 (bracket 0.5-1.0); the conservative
-lower-confidence-bound minimum is 2.0.
+predictor maps. Across 30 phase surrogates per coefficient on the regenerated v2 surface
+product, spatially robust direct-ablation recovery is 5/30 at zero (0.1667; Wilson 95% CI
+0.0734-0.3356), 11/30 at 0.5, 9/30 at 1.0, 1/30 at 1.5, and 0/30 at 2.0–4.0. The
+tested-grid 80% MDE is **not reached**; detection peaks near coefficient 0.5 (~0.37) and
+collapses at larger latent strengths.
 
-That recovery does not establish adequate scientific power. Coefficient 1.0 already produces
-a median top-minus-bottom signal-quartile risk difference of 0.05565 and a corrected odds
-ratio of about 606.8—an extreme injected contrast with effectively no bottom-quartile
-positives. The coefficient is a latent simulation unit, not a physics-calibrated H2 effect,
-and no scientifically justified target effect was declared. `positive_control_recovered` is
-therefore true while `power_at_target_effect` remains null and `adequate_power` remains false.
-The direct H2 ablation also does not resimulate tuning, permutation, SHAP, or every conjunctive
-H1 criterion; it cannot be represented as full-decision power for H1.
+That curve does not establish adequate scientific power. Coefficient 1.0 already produces a
+median top-minus-bottom signal-quartile risk difference of ≈0.128 and a corrected odds ratio
+of about 56.7—still a large injected contrast—yet the spatially robust ablation criterion
+fails to fire at high strengths under this mask. The coefficient is a latent simulation unit,
+not a physics-calibrated H2 effect, and no scientifically justified target effect was
+declared. Observed H2 `positive_control_recovered` is false, and the H2 injection arm also
+leaves `positive_control_recovered` false on the tested grid while
+`power_at_target_effect` remains null and `adequate_power` remains false. The direct H2
+ablation also does not resimulate tuning, permutation, SHAP, or every conjunctive H1
+criterion; it cannot be represented as full-decision power for H1.
 
 ## F12 — Dichotomization and clustered rarity
 
-**Problem.** Thresholding |B| at 5 nT discards magnitude and leaves about 286 clustered
-positives (~1.4%); 10 nT is rarer. PR-AUC then moves sharply with how the provinces are split.
+**Problem.** Thresholding surface |B| at 10 nT discards magnitude and leaves about 168
+clustered positives (~3.8%; n = 4374); 25 nT is rarer. PR-AUC then moves sharply with how the provinces are split.
 
 **Disposition.** Threshold results are not presented as stable planetary measurements.
 The implemented blocked ridge comparison preserves `log1p(|B|)`: controls-only R² is
-0.2590 and controls+TiO₂ is 0.2712, with fold-mean increment +0.0121 ± 0.0052. All five
+0.3649 and controls+TiO₂ is 0.3503, with fold-mean increment **−0.0146**. Report binary and
+continuous separately. The continuous folds
 chosen-fold increments are positive, but they are descriptive rather than inferential because
-the partitions do not create independent regions (`n_eff ≈ 1`) and no row-level p-value is
+the partitions do not create fully independent regions (`n_eff ≈ 6.9`) and no row-level p-value is
 reported. This small increment cannot rescue the headline or establish the temporal mechanism.
 
 ## F13 — Researcher degrees of freedom
@@ -229,9 +232,10 @@ repository author.
 ## Net claim
 
 The bundled run does not distinguish the tested surface-TiO₂ spatial proxy from spatial null
-structure at demonstrated power. The observed H2 encoding is recovered against its matched
-H2-only null, and a direct H2 injection is recovered once the encoded signal is extreme. But
-no physics-justified target effect has adequate demonstrated power and the effective-region
+structure at demonstrated power. The observed H2 encoding is **not** recovered against its
+matched H2-only null (*p* ≈ 0.1724), and regenerated injection-power artifacts keep
+`adequate_power` false (H1 power 0.467 at the illustrative strength-1.0 anchor). No
+physics-justified target effect has adequate demonstrated power and the effective-region
 estimate remains one. The correct status is **`INCONCLUSIVE_LOW_POWER`**. The study does not
 show where a sample-scale relation "stops," does not establish H2 as the unique explanation,
 and does not adjudicate the temporal intermittent-dynamo mechanism.

@@ -48,7 +48,7 @@ outputs. It never substitutes generated data or silently skips an unavailable so
 
 | Layer | Pinned native product | Conversion to canonical grid | Canonical output |
 |---|---|---|---|
-| Magnetic target | JAXA DARTS `SLN-L-LMAG-5-MA-GRID-OPTION-V1.0`, `MA_GDOP_001` | absolute total-field `F`; periodic linear interpolation of 64,440 points | `magnetic_anomaly.tif`, nT |
+| Magnetic target | Tsunakawa et al. (2015) surface SVM via Wieczorek `T2015_449` (Zenodo `10.5281/zenodo.3873648`); **supersedes** JAXA `MA_GDOP_001` (30 km altitude grid, not a surface map) | evaluate spherical-harmonic expansion at lunar mean radius; store surface \|B\| | `magnetic_anomaly.tif`, nT |
 | TiO2 (candidate spatial proxy) | LROC WAC TiO2, `LRO-L-LROC-5-RDR-V1.0/LROLRC_2001`, eight IMG/PDS4-label pairs | decode native payloads; normalize longitude seam; mask values outside 0–15 wt.%; area-average | `tio2_abundance.tif`, wt.% |
 | Bouguer gravity | GRAIL GRGM1200A Bouguer disturbance, degree/order 180 GeoTIFF | normalize longitude seam; area-average | `bouguer_gravity.tif`, mGal |
 | Crustal thickness | GRAIL Crustal Thickness Archive v1, `Model1_thick.dat` | parse 0.25-degree grid; drop duplicate 360-degree seam; area-average | `crustal_thickness.tif`, km |
@@ -72,7 +72,12 @@ recorded in the manifest as a control-layer uncertainty, not silently treated as
   *Science* 339, DOI `10.1126/science.1231530`.
 - USGS geology: Fortezzo, Spudis, and Harrel (2020), Unified Geologic Map of the Moon,
   GIS v2 dated 2020-03-03, 1:5M.
-- JAXA LMAG: Tsunakawa et al. (2015), DOI `10.1002/2014JE004785`.
+- Surface magnetic target: Tsunakawa et al. (2015), DOI `10.1002/2014JE004785`; Wieczorek
+  `T2015_449` SH model, DOI `10.5281/zenodo.3873648`. **v1.0.0** used JAXA `MA_GDOP_001`
+  (30 km altitude) and is superseded — that altitude product must never be described as a
+  surface map.
+- LROC WAC TiO₂ values below the **2 wt% detection limit** are non-quantitative
+  (`tio2_quantitative` mask).
 
 Resolved URLs, versions, byte sizes, MD5 values, code-pinned SHA-256 values, licenses,
 and per-member extraction hashes are machine-readable in
@@ -134,14 +139,14 @@ verified provenance.
   and a frozen allowlist: `Em`, `Im1`, `Im2`, and `Imd` (Eratosthenian mare, lower/upper
   Imbrian mare, and mare dome). It is still an approximate 1:5M mapped-geology proxy: mapped
   superposed units are excluded, and boundary rasterization depends on source generalization
-  and analysis resolution. In the legacy Imbrian scope it retains 6,232 pixels, 58 positives,
-  and nine nominal blocks. Raw TiO2+controls PR-AUC is 0.1252 versus 0.0576 for controls;
-  fold increments [0.2615, 0.0834, -0.0018, -0.0070, 0.0020] yield one-sided paired
-  Wilcoxon *p* = 0.21875. The post-hoc result is positive in the mean but not statistically
-  significant, unstable, and inconclusive.
+  and analysis resolution. In the Imbrian ∩ quantitative scope it retains **3,928** pixels
+  across **30 mare blocks (15 contain positives)**. H1+controls / controls ≈ 0.4766 /
+  0.4213 (drop ≈ 0.0553). Wilcoxon *p* is unavailable for a significance claim. The post-hoc
+  result is inconclusive — not confirmation.
 - The six-basin catalogue is a declared approximate model choice, not an observational
   download or exhaustive impact database. Its analytically exact antipodes are exact only
   relative to those approximate inputs. H2 is therefore a benchmark, not assured truth.
-- The 5 nT binary target discards continuous field magnitude and yields about 286 clustered
-  positives in the primary cell. Numeric pixel count must not be mistaken for independent
-  sample size; the bundled diagnostics estimate `n_eff ≈ 1`.
+- The 10 nT binary target (25 nT sensitivity) discards continuous field magnitude and yields
+  about 168 clustered positives among 4374 quantitative Imbrian pixels (prevalence ≈ 0.0384).
+  Numeric pixel count must not be mistaken for independent sample size; the bundled
+  diagnostics estimate `n_eff ≈ 6.9`.

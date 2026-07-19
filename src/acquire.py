@@ -58,8 +58,7 @@ PINNED_SHA256: Dict[str, str] = {
     "grail-bouguer-geotiff": "1780b1b756135749ea9478dce793a05caaf94003b545b8a4514f618a00d9013d",
     "grail-bouguer-label": "fbf5f97612607d561d7e5efc307d19d4342259140d852b7f2103fef87664d084",
     "grail-thickness-archive": "4ea89cac2564f666c0eed5300c6d4852b43c284d46f80631d0bdd5710353ad2c",
-    "jaxa-magnetic-data": "f7be611d77e96afb5a6ec9e6631f8fe2824fcc96984c7b32dd9de0378e63852d",
-    "jaxa-magnetic-label": "cc6486a15a6ebbc5b53f614c9b08f7cd774282a1513539e602c137612a169483",
+    "tsunakawa-wieczorek-sh": "4db0b77b3863f38d6fb6e62c5c1116bf7123b77c5aad65df7dae598714edd655",
     "lroc-WAC_TIO2_E350N0450.IMG": "71987000fce8d03f49d8020b8c9dddefe293cd17988359d4c630f6b05db0e499",
     "lroc-WAC_TIO2_E350N0450.xml": "b57bb10305ae852c044e7f8b46586a3fbe5cb6c697040b30d5a7aaf3d495106d",
     "lroc-WAC_TIO2_E350N1350.IMG": "f02bd49f8fd2281499b2f5d10aa0639a81e4cf4893345324afd8442a1bbebaf5",
@@ -111,26 +110,15 @@ def _specs() -> List[SourceSpec]:
         product_id="LRO-L-LROC-5-RDR-V1.0/LROLRC_2001 WAC_TIO2",
     ))
 
-    jaxa_base = (
-        "https://data.darts.isas.jaxa.jp/pub/pds3/"
-        "sln-l-lmag-5-ma-grid-option-v1.0/data"
-    )
-    specs.extend([
-        SourceSpec(
-            key="jaxa-magnetic-data", family="jaxa",
-            url=f"{jaxa_base}/MA_GDOP_001.dat",
-            relative_path="jaxa_lmag/MA_GDOP_001.dat",
-            product_id="SLN-L-LMAG-5-MA-GRID-OPTION-V1.0 / MA_GDOP_001",
-            expected_size=6_186_240,
-            expected_md5="2743be2c56e21c0de5404bc08dbbdded",
-        ),
-        SourceSpec(
-            key="jaxa-magnetic-label", family="jaxa",
-            url=f"{jaxa_base}/MA_GDOP_001.lbl",
-            relative_path="jaxa_lmag/MA_GDOP_001.lbl",
-            product_id="SLN-L-LMAG-5-MA-GRID-OPTION-V1.0 / MA_GDOP_001",
-        ),
-    ])
+    specs.append(SourceSpec(
+        key="tsunakawa-wieczorek-sh", family="magnetic",
+        url="https://zenodo.org/records/3873648/files/T2015_449.sh.gz?download=1",
+        relative_path="tsunakawa_svm/T2015_449.sh.gz",
+        product_id="Wieczorek T2015_449 SH expansion of Tsunakawa et al. 2015 SVM",
+        expected_size=2_319_052,
+        expected_md5="a332b1210761855b9bbf85215ff28a41",
+        expected_sha256=PINNED_SHA256["tsunakawa-wieczorek-sh"],
+    ))
 
     pds_grail = (
         "https://pds-geosciences.wustl.edu/grail/"
@@ -220,13 +208,22 @@ PRODUCTS: Dict[str, Dict[str, object]] = {
         "institution": "USGS Astrogeology Science Center",
         "version": "Unified Geologic Map of the Moon 1:5M, GIS version 2, 2020-03-03",
         "license": "CC0 (citation requested)",
-        "citation": "Fortezzo, Spudis & Harrel (2020), LPSC abstract 2760",
+        "citation": "Fortezzo, Spudis & Shannon L. Harrel (2020), LPSC abstract 2760",
     },
-    "jaxa_lmag": {
-        "institution": "ISAS/JAXA DARTS",
-        "version": "SLN-L-LMAG-5-MA-GRID-OPTION-V1.0 / MA_GDOP_001",
-        "native_unit": "nT",
-        "citation": "Tsunakawa et al. (2015), doi:10.1002/2014JE004785",
+    "tsunakawa_svm": {
+        "institution": "Zenodo / Tsunakawa et al. 2015 surface SVM",
+        "version": "Wieczorek T2015_449.sh.gz (degree/order 449)",
+        "doi": "10.5281/zenodo.3873648",
+        "native_unit": "nT (surface-evaluated |B|)",
+        "citation": (
+            "Tsunakawa et al. (2015), doi:10.1002/2014JE004785; "
+            "Wieczorek SH model, doi:10.5281/zenodo.3873648 "
+            "(expansion of globalSVM20150511/LunarSVM_000_02_v01.dat)"
+        ),
+        "note": (
+            "Supersedes v1.0.0's JAXA MA_GDOP_001, which is a 30 km altitude "
+            "grid and must not be described as a surface map."
+        ),
     },
 }
 
@@ -476,8 +473,10 @@ def _load_previous() -> Dict[str, Dict[str, object]]:
 def acquire(families: Iterable[str], force: bool = False, workers: int = 4) -> Path:
     selected = set(families)
     if "all" in selected:
-        selected = {"lroc", "grail", "usgs", "jaxa"}
-    unknown = selected - {"lroc", "grail", "usgs", "jaxa"}
+        selected = {"lroc", "grail", "usgs", "magnetic"}
+    # Accept legacy alias "jaxa" as "magnetic" during the v2 product switch.
+    selected = {"magnetic" if name == "jaxa" else name for name in selected}
+    unknown = selected - {"lroc", "grail", "usgs", "magnetic"}
     if unknown:
         raise ValueError(f"unknown acquisition families: {sorted(unknown)}")
     specs = [spec for spec in SPECS if spec.family in selected]
@@ -541,8 +540,8 @@ def acquire(families: Iterable[str], force: bool = False, workers: int = 4) -> P
 def main(argv: Optional[Sequence[str]] = None) -> None:
     parser = argparse.ArgumentParser(description="Acquire authoritative real lunar datasets")
     parser.add_argument(
-        "family", nargs="+", choices=["all", "lroc", "grail", "usgs", "jaxa"],
-        help="source family/families to download",
+        "family", nargs="+", choices=["all", "lroc", "grail", "usgs", "magnetic", "jaxa"],
+        help="source family/families to download (jaxa is a legacy alias for magnetic)",
     )
     parser.add_argument("--force", action="store_true", help="redownload even verified files")
     parser.add_argument("--workers", type=int, default=4, help="parallel download workers")

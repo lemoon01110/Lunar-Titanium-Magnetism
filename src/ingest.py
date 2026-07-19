@@ -52,7 +52,7 @@ SOURCE_MANIFEST = os.path.join(SOURCES_DIR, "source_manifest.json")
 REAL_DATA_MANIFEST = getattr(config, "REAL_DATA_MANIFEST", "real_data_manifest.json")
 
 VALUE_RANGES: Dict[str, Tuple[float, float]] = {
-    "magnetic": (0.0, 3000.0),       # nT, total surface-field magnitude
+    "magnetic": (0.0, 3000.0),       # nT, surface-evaluated |B| magnitude
     "tio2": (0.0, 15.0),             # wt%; official product warns >15 is unreliable
     "gravity": (-2000.0, 2000.0),    # mGal
     "thickness": (0.0, 120.0),       # km
@@ -287,8 +287,11 @@ def _load_lroc_tio2_tile(label_path: str) -> Tuple[np.ndarray, Affine]:
             raise ValueError(f"{image_path}: expected lunar equirectangular source CRS")
         arr = src.read(1, masked=True).filled(np.nan).astype("float32")
         native_transform = src.transform
-    # The official README states >15 wt% is unreliable; PDS special constants
+    # Official WAC_TIO2_README: >15 wt% is unreliable; PDS special constants
     # are extreme negative float sentinels.  Both become canonical nodata.
+    # Values below the 2 wt% detection limit are left as the product floor
+    # (1 wt%) here and flagged non-quantitative downstream — they must not be
+    # treated as continuous measured abundance.
     arr[(~np.isfinite(arr)) | (arr < 0.0) | (arr > 15.0)] = np.nan
 
     labelled_res = float(_pds_text(root, ".//cart:pixel_resolution_x"))
@@ -330,67 +333,145 @@ def ingest_tio2(
     valid = count > 0
     mosaic[valid] = (total[valid] / count[valid]).astype("float32")
     write_canonical_raster(_out("tio2", output_dir), mosaic, res_deg)
-    print(f"[tio2] 8 PDS4 label+IMG tiles -> {config.RAW_FILES['tio2']}")
+    # Companion mask: 1 = at/above the official 2 wt% detection limit.
+    quantitative = np.zeros_like(mosaic, dtype="float32")
+    quantitative[valid] = (mosaic[valid] >= config.TIO2_DETECTION_LIMIT_WT).astype("float32")
+    quantitative[~valid] = np.nan
+    write_canonical_raster(
+        os.path.join(output_dir, "tio2_quantitative.tif"), quantitative, res_deg
+    )
+    n_quant = int(np.nansum(quantitative == 1))
+    n_cens = int(np.nansum(quantitative == 0))
+    print(
+        f"[tio2] 8 PDS4 label+IMG tiles -> {config.RAW_FILES['tio2']} "
+        f"(quantitative>={config.TIO2_DETECTION_LIMIT_WT:g} wt%: {n_quant:,}; "
+        f"below detection: {n_cens:,})"
+    )
     return {
         "sources": [os.path.relpath(path, SOURCES_DIR) for path in labels],
         "product": "LROC WAC TiO2 abundance, LROLRC_2001, PDS4 label version 2.0",
         "native_unit": "TiO2 weight percent",
-        "conversion": "decode IEEE754LSBSingle payloads; mask <0/>15; area-average mosaic",
+        "conversion": (
+            "decode IEEE754LSBSingle payloads; mask <0/>15; area-average mosaic; "
+            f"flag <{config.TIO2_DETECTION_LIMIT_WT:g} wt% as non-quantitative "
+            "(product sets below-detection cells to 1 wt%)"
+        ),
+        "detection_limit_wt_percent": config.TIO2_DETECTION_LIMIT_WT,
+        "n_quantitative_cells": n_quant,
+        "n_below_detection_cells": n_cens,
         "coverage": "70 S to 70 N",
     }
 
 
-def ingest_magnetic_jaxa(
+def _load_tsunakawa_wieczorek_sh(path: str):
+    """Load Wieczorek T2015_449 magnetic-potential coefficients (Tesla)."""
+    import gzip
+
+    import pyshtools as pysh
+
+    opener = gzip.open if str(path).endswith(".gz") else open
+    with opener(path, "rt") as fh:
+        header = fh.readline().strip().replace(",", " ").split()
+        radius_m = float(header[0])
+        lmax = int(float(header[1]))
+        coeffs = np.zeros((2, lmax + 1, lmax + 1), dtype="float64")
+        for line in fh:
+            parts = line.split()
+            if len(parts) < 4:
+                continue
+            degree, order = int(parts[0]), int(parts[1])
+            coeffs[0, degree, order] = float(parts[2])
+            coeffs[1, degree, order] = float(parts[3])
+    # Coefficients are stored in Tesla; SHMagCoeffs expects nT for |B| in nT.
+    return pysh.SHMagCoeffs.from_array(
+        coeffs * 1e9,
+        r0=radius_m,
+        normalization="schmidt",
+        csphase=1,
+        units="nT",
+    ), radius_m
+
+
+def ingest_magnetic_surface_svm(
     res_deg: float = config.GRID_RES_DEG,
     output_dir: str = config.RAW_DIR,
 ) -> Optional[Dict[str, Any]]:
-    source = _find_recursive(_source_path("jaxa_lmag", "MA_GDOP_001.dat"))
-    if not source:
-        print("[magnetic] required JAXA MA_GDOP_001.dat is missing")
-        return None
-    df = pd.read_csv(
-        source, sep=",", header=None, usecols=[0, 1, 5],
-        names=["lat", "lon", "F"], dtype="float64",
-    )
-    if not np.isfinite(df[["lat", "lon", "F"]].to_numpy()).all():
-        raise ValueError(f"{source}: non-finite coordinate or field value")
-    lats = np.sort(df["lat"].unique())
-    lons = np.sort(spatial.wrap_lon(df["lon"].unique()))
-    if len(lats) != 179 or len(lons) != 360 or not np.allclose(np.diff(lats), 1.0) or not np.allclose(
-        np.diff(lons), 1.0
-    ):
-        raise ValueError(f"{source}: unexpected MA_GDOP grid coordinates")
-    df = df.assign(lon=spatial.wrap_lon(df["lon"].to_numpy()))
-    native = df.pivot(index="lat", columns="lon", values="F").reindex(index=lats, columns=lons)
-    if native.isna().any().any():
-        raise ValueError(f"{source}: MA_GDOP grid is incomplete or duplicated")
-    values = np.abs(native.to_numpy(dtype="float64"))
+    """Ingest the Tsunakawa et al. (2015) surface SVM via Wieczorek's SH expansion.
 
-    # Add symmetric polar and periodic seam guards, then interpolate to the
-    # canonical cell centres.  This avoids the former order-dependent "last
-    # point wins" assignment and the north/south bias from boundary flooring.
-    extended = np.pad(values, ((1, 1), (1, 1)), mode="edge")
-    extended[:, 0] = extended[:, -2]
-    extended[:, -1] = extended[:, 1]
-    lat_ext = np.concatenate(([-90.0], lats, [90.0]))
-    lon_ext = np.concatenate(([-180.5], lons, [180.5]))
+    The retired v1 product ``MA_GDOP_001`` is a 30 km *altitude* grid and must not
+    be labelled a surface map.  Here we evaluate Wieczorek's degree-449 expansion
+    of the Tsunakawa surface SVM (Zenodo 10.5281/zenodo.3873648) at the lunar
+    mean radius and resample |B| onto the canonical 1° cell centres.
+    """
+    source = _find_recursive(_source_path("tsunakawa_svm", "T2015_449.sh.gz"))
+    if not source:
+        source = _find_recursive(_source_path("tsunakawa_svm", "T2015_449.sh"))
+    if not source:
+        print("[magnetic] required T2015_449.sh.gz (Wieczorek/Tsunakawa surface SH) is missing")
+        return None
+
+    mag_coeffs, radius_m = _load_tsunakawa_wieczorek_sh(source)
+    field = mag_coeffs.expand(a=radius_m, lmax=mag_coeffs.lmax)
+    total = field.total
+    values = np.asarray(total.to_array(), dtype="float64")
+    lats = np.asarray(total.lats(), dtype="float64")
+    lons = np.asarray(total.lons(), dtype="float64")
+    # Drop the duplicated meridian from an extended DH grid when present.
+    if values.shape[1] == len(lons) and (
+        np.isclose(lons[-1] - lons[0], 360.0) or np.isclose(lons[0] + 360.0, lons[-1])
+    ):
+        values = values[:, :-1]
+        lons = lons[:-1]
+    lon_wrapped = np.where(lons > 180.0, lons - 360.0, lons)
+    order = np.argsort(lon_wrapped)
+    lon_sorted = lon_wrapped[order]
+    values = values[:, order]
+    # RegularGridInterpolator requires ascending latitude.
+    lat_asc = lats[::-1]
+    values_asc = values[::-1, :]
+    lon_pad = np.concatenate([[lon_sorted[0] - 360.0], lon_sorted, [lon_sorted[-1] + 360.0]])
+    values_pad = np.empty((values_asc.shape[0], values_asc.shape[1] + 2), dtype="float64")
+    values_pad[:, 1:-1] = values_asc
+    values_pad[:, 0] = values_asc[:, -1]
+    values_pad[:, -1] = values_asc[:, 0]
     interpolator = RegularGridInterpolator(
-        (lat_ext, lon_ext), extended, method="linear", bounds_error=True
+        (lat_asc, lon_pad), values_pad, method="linear", bounds_error=True
     )
+
     _, width, height = canonical_grid(res_deg)
     target_lons = -180.0 + res_deg * (np.arange(width) + 0.5)
     target_lats = 90.0 - res_deg * (np.arange(height) + 0.5)
     lon_grid, lat_grid = np.meshgrid(target_lons, target_lats)
     points = np.column_stack((lat_grid.ravel(), lon_grid.ravel()))
-    grid = interpolator(points).reshape(height, width).astype("float32")
+    grid = np.abs(interpolator(points).reshape(height, width)).astype("float32")
     write_canonical_raster(_out("magnetic", output_dir), grid, res_deg)
-    print(f"[magnetic] {len(df):,} MA_GDOP points -> {config.RAW_FILES['magnetic']}")
+    print(
+        f"[magnetic] Tsunakawa/Wieczorek surface |B| "
+        f"(max={float(np.nanmax(grid)):.1f} nT) -> {config.RAW_FILES['magnetic']}"
+    )
     return {
         "source": os.path.relpath(source, SOURCES_DIR),
-        "product": "JAXA LMAG MA_GDOP_001 surface vector map option",
+        "product": (
+            "Tsunakawa et al. (2015) surface vector map via Wieczorek T2015_449 "
+            "spherical-harmonic expansion evaluated at the lunar mean radius"
+        ),
         "native_unit": "nT",
-        "conversion": "absolute F column; periodic linear interpolation to cell centres",
+        "evaluation_radius_m": radius_m,
+        "sh_degree": int(mag_coeffs.lmax),
+        "conversion": (
+            "expand magnetic potential to |B| at r = R_moon; linear interpolate "
+            "to canonical 1° cell centres"
+        ),
+        "citations": [
+            "Tsunakawa et al. (2015), doi:10.1002/2014JE004785",
+            "Wieczorek (2018) SH model, doi:10.5281/zenodo.3873648",
+        ],
+        "supersedes": "JAXA MA_GDOP_001 (30 km altitude grid; not a surface map)",
     }
+
+
+# Backwards-compatible alias used by older call sites / docs.
+ingest_magnetic_jaxa = ingest_magnetic_surface_svm
 
 
 def ingest_magnetic_csv(
@@ -1020,7 +1101,7 @@ def run_all(res_deg: float = config.GRID_RES_DEG) -> Dict[str, Any]:
             ("gravity", ingest_gravity),
             ("thickness", ingest_thickness),
             ("age", ingest_age),
-            ("magnetic", ingest_magnetic_jaxa),
+            ("magnetic", ingest_magnetic_surface_svm),
         )
         for key, converter in steps:
             metadata = converter(res_deg, staging)
@@ -1036,6 +1117,7 @@ def run_all(res_deg: float = config.GRID_RES_DEG) -> Dict[str, Any]:
         validate_raw_grids(staging, res_deg, require_real_provenance=True)
         promote = [
             *config.RAW_FILES.values(), config.TERRAIN_VALIDITY_FILE,
+            "tio2_quantitative.tif",
             config.BASINS_CSV, config.ANTIPODES_CSV,
             REAL_DATA_MANIFEST,
         ]
@@ -1052,7 +1134,7 @@ STEPS = {
     "gravity": ingest_gravity,
     "thickness": ingest_thickness,
     "age": ingest_age,
-    "magnetic": ingest_magnetic_jaxa,
+    "magnetic": ingest_magnetic_surface_svm,
     "basins": write_basin_catalog,
     "validate": validate_raw_grids,
     "all": run_all,

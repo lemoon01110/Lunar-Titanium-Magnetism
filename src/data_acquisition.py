@@ -178,6 +178,9 @@ def generate_synthetic_data(
         # all-valid mask keeps the same fail-closed schema without pretending the
         # synthetic geologic provinces are observed mare units.
         config.TERRAIN_VALIDITY_FILE: np.ones_like(tio2, dtype="float32"),
+        # Synthetic TiO2 has no LROC detection-limit floor; mark the whole artificial
+        # domain quantitative so preprocess/evaluate share the real-data schema.
+        config.TIO2_QUANTITATIVE_FILE: np.ones_like(tio2, dtype="float32"),
     }
     for fname, arr in layers.items():
         _write_raster(os.path.join(data_dir, fname), arr, transform)
@@ -185,7 +188,8 @@ def generate_synthetic_data(
     prevalence = float(np.mean(mag >= config.PRIMARY_THRESHOLD_NT))
     print(
         f"Synthetic data ({scenario}) written to {data_dir} | "
-        f"grid {width}x{height} | global 5nT prevalence {prevalence:.1%}"
+        f"grid {width}x{height} | global {config.PRIMARY_THRESHOLD_NT:.0f} nT "
+        f"prevalence {prevalence:.1%}"
     )
 
 

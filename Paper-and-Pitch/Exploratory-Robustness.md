@@ -39,8 +39,8 @@ primary evidence classification.
 
 Calling `k=6` "least leaky" and `k=24` "a leakage artifact" is too strong without a
 validated independence model. What the sweep directly establishes is that the estimate moves
-more than seven-fold when the map partition changes. Together with the fitted ≈3,752 km range,
-≈910 km primary blocks, and `n_eff ≈ 1`, that instability supports an inadequacy diagnosis,
+more than seven-fold when the map partition changes. Together with the fitted ≈403 km range,
+≈910 km primary blocks, and `n_eff ≈ 6.9`, that instability supports an inadequacy diagnosis,
 not a robust-negative story.
 
 ## 3. Gradient features
@@ -64,9 +64,10 @@ zero and known injected effects. That calibration has not been claimed. The comp
 narrower direct-H2-ablation study uses the real mask and spatial structure and reports its
 fixed recovery curve and tested-grid floor. It recovers only large encoded effects, has no
 physics-justified target effect, and therefore leaves `adequate_power = false`. A separate
-USGS mare-domain sensitivity retains 6,232 pixels and 58 positives, with mean raw-TiO₂
-PR-AUC increment +0.0676 but fold increments concentrated in two folds and paired
-*p* = 0.21875. It is not statistically significant and inconclusive, not confirmation.
+USGS mare-domain sensitivity retains 3,928 pixels across **30 mare blocks
+(15 contain positives)**, with H1+controls / controls ≈ 0.4766 / 0.4213 (drop ≈ 0.0553); fold increments
+concentrated in two folds and paired *p* = 0.21875. Report binary and continuous estimands
+separately; neither is statistically significant confirmation.
 
 These post-hoc experiments therefore do not overturn the repository-plan criteria failure, but
 they also do not convert it into `NOT_SUPPORTED`. The scientifically honest conclusion remains

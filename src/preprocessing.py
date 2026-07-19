@@ -127,6 +127,11 @@ def preprocess_data(
     terrain_out = os.path.join(processed_dir, "cea_" + config.TERRAIN_VALIDITY_FILE)
     reproject_raster(terrain_source, terrain_out, Resampling.nearest)
     cea_paths["terrain"] = terrain_out
+    quant_source = os.path.join(raw_dir, config.TIO2_QUANTITATIVE_FILE)
+    if os.path.isfile(quant_source):
+        quant_out = os.path.join(processed_dir, "cea_" + config.TIO2_QUANTITATIVE_FILE)
+        reproject_raster(quant_source, quant_out, Resampling.nearest)
+        cea_paths["tio2_quantitative"] = quant_out
     print("Reprojection to lunar CEA complete.")
 
     # 2. Read layers + geometry.
@@ -136,6 +141,15 @@ def preprocess_data(
     thickness, _ = _read(cea_paths["thickness"])
     age, _ = _read(cea_paths["age"])
     terrain, _ = _read(cea_paths["terrain"])
+    if "tio2_quantitative" in cea_paths:
+        tio2_quant_grid, _ = _read(cea_paths["tio2_quantitative"])
+    else:
+        # Synthetic / legacy inputs: derive the mask from the detection limit.
+        tio2_quant_grid = np.where(
+            np.isfinite(tio2),
+            (tio2 >= config.TIO2_DETECTION_LIMIT_WT).astype("float64"),
+            np.nan,
+        )
 
     with rasterio.open(cea_paths["magnetic"]) as src:
         transform, width, height = src.transform, src.width, src.height
@@ -157,6 +171,16 @@ def preprocess_data(
         )
     terrain_binary = np.where(np.isfinite(terrain), terrain, 0.0).astype("int8")
     tio2_terrain_valid = valid & (terrain_binary == 1)
+    tio2_quant_binary = np.where(
+        np.isfinite(tio2_quant_grid),
+        (tio2_quant_grid >= 0.5).astype("int8"),
+        0,
+    )
+    tio2_quantitative = valid & (tio2_quant_binary == 1)
+    # For H1 buffers, average only detection-limit-valid TiO2.  Mixing the
+    # product's 1 wt% floor into neighbourhood means invents false abundance.
+    tio2_for_buffers = np.where(tio2_quantitative, tio2, np.nan)
+    buffer_valid = valid & tio2_quantitative
 
     # Snap age to nearest integer class (nearest-resampling can leave floats).
     age_class = np.where(valid, np.rint(age), np.nan)
@@ -180,7 +204,7 @@ def preprocess_data(
         config.BUFFER_RADII_KM, config.TIO2_BUFFER_FEATURES, config.INTERACTION_FEATURES
     ):
         radius_px = radius_km / res_km
-        tio2_buf = circular_buffer_mean(tio2, valid, radius_px)
+        tio2_buf = circular_buffer_mean(tio2_for_buffers, buffer_valid, radius_px)
         grav_buf = circular_buffer_mean(grav_pos, valid, radius_px)
         tio2_buffer_cols[tcol] = tio2_buf
         interaction_cols[icol] = tio2_buf * grav_buf
@@ -223,12 +247,19 @@ def preprocess_data(
         "nearside": nearside,
         "age_class": age_class,
         "tio2_terrain_valid": tio2_terrain_valid.astype("int8"),
+        "tio2_quantitative": tio2_quantitative.astype("int8"),
         "spatial_block": block_ids,
         **tio2_buffer_cols,
         **interaction_cols,
     }
     df = pd.DataFrame({k: np.asarray(v).ravel() for k, v in columns.items()})
     df = df[valid.ravel()].copy()
+    # Row-local TiO2 below the detection limit is retained in the raw column for
+    # auditability but must not enter continuous H1 features as a real abundance.
+    below = df["tio2_quantitative"] == 0
+    df.loc[below, "tio2"] = np.nan
+    for col in config.TIO2_BUFFER_FEATURES + config.INTERACTION_FEATURES:
+        df.loc[below, col] = np.nan
     df = df.dropna().reset_index(drop=True)
 
     # Targets.

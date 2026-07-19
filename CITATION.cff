@@ -2,30 +2,39 @@ cff-version: 1.2.0
 message: >-
   If you use this software or its analysis, please cite the repository (below) and,
   where relevant, the underlying data products and the mechanism paper that motivates it.
-  Full citations are in References.md.
+  Full citations are in References.md. Version 1.0.0 is superseded and must not be cited
+  or deposited to Zenodo.
 title: >-
   Surface TiO2 and Lunar Crustal Magnetism: An Underpowered Spatial Co-location Analysis
 abstract: >-
   A spatially blocked analysis of whether present-day LROC WAC surface-TiO2 values
-  co-locate with lunar crustal magnetic-field anomalies. The declared global-map footprint is
-  underpowered because the effective number of independent spatial regions is about
-  one, the spatial blocks are much smaller than the fitted dependence range, and no
-  physically justified target effect anchors the injection-recovery power curve. The
-  impact-antipode benchmark is recovered against its separately matched null, but that
-  does not repair the structural power limit. The result is therefore inconclusive. It
-  does not test the temporal/thermal
-  intermittent-dynamo mechanism proposed by Nichols et al. (2026). The repository's
-  prospective plan was self-attested in Git and was not independently timestamped.
+  (quantitative cells ≥2 wt% only) co-locate with surface-evaluated lunar crustal
+  magnetic-field anomalies (Tsunakawa et al. 2015 SVM via Wieczorek T2015_449). The
+  declared jointly available numerical footprint is underpowered: approximate effective
+  independent regions are about 6.9, CV blocks exceed the fitted dependence range
+  (~403 km), and no physically justified target effect anchors the injection-recovery
+  power curve (H1 power ≈0.467 at the illustrative strength-1.0 anchor; adequate_power
+  false). The impact-antipode benchmark is not recovered against its matched null
+  (p≈0.1724). The result is therefore INCONCLUSIVE_LOW_POWER. It does not test the
+  temporal/thermal intermittent-dynamo mechanism proposed by Nichols, Wade and
+  Stephenson (2026). The repository's analysis plan is an author-declared prospective
+  plan whose timing cannot be independently verified (all git history begins after
+  results already existed).
 type: software
 authors:
-  - given-names: Lemon
+  - family-names: Wu
+    given-names: "Juncong Jack"
     alias: lemoon01110
     orcid: "https://orcid.org/0009-0004-1710-9018"
-version: "1.0.0"
-date-released: "2026-07-18"
+    # Credit name: Jack Wu (lemoon01110); formerly published as "Lemon"
+version: "2.0.0"
+# date-released is set only when an immutable git tag for this version exists.
+# Do not claim a release date before tagging v2.0.0.
 license:
   - MIT
   - CC-BY-4.0
+# License note: repository code is MIT; paper, slides, figures, and data artifacts are
+# CC-BY-4.0. CITATION.cff lists both as alternatives per the schema.
 url: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
 repository-code: "https://github.com/lemoon01110/Lunar-Titanium-Magnetism"
 keywords:
@@ -95,8 +104,8 @@ references:
     year: 2025
     doi: "10.1126/sciadv.adr7401"
   # --- Data products (see Data-Sources.md for versions, access, and full provenance) ---
-  - type: data
-    scope: "Target: surface crustal magnetic field (Kaguya/Lunar Prospector SVM)"
+  - type: article
+    scope: "Target article: surface crustal magnetic field (Kaguya/Lunar Prospector SVM)"
     authors:
       - family-names: Tsunakawa
         given-names: Hideo
@@ -118,7 +127,18 @@ references:
     year: 2015
     doi: "10.1002/2014JE004785"
   - type: data
-    scope: "Feature: surface TiO2 abundance (LROC WAC)"
+    scope: "Target dataset: Wieczorek T2015_449 SH expansion of Tsunakawa et al. 2015 SVM"
+    authors:
+      - family-names: Wieczorek
+        given-names: Mark A.
+    title: "T2015_449 spherical-harmonic expansion of the Tsunakawa et al. 2015 lunar SVM"
+    year: 2020
+    doi: "10.5281/zenodo.3873648"
+    notes: >-
+      Evaluated at lunar mean radius for the v2.0.0 surface magnetic target.
+      Supersedes v1.0.0's JAXA MA_GDOP_001 (30 km altitude grid).
+  - type: article
+    scope: "Feature article: surface TiO2 abundance (LROC WAC)"
     authors:
       - family-names: Sato
         given-names: Hiroyuki
@@ -130,7 +150,17 @@ references:
     year: 2017
     doi: "10.1016/j.icarus.2017.06.013"
   - type: data
-    scope: "Feature: GRAIL Bouguer gravity (GRGM1200A) and crustal thickness"
+    scope: "Feature: GRAIL Bouguer gravity (GRGM1200A)"
+    authors:
+      - family-names: Lemoine
+        given-names: Frank G.
+      - family-names: Goossens
+        given-names: Sander
+    title: "GRAIL GRGM1200A Bouguer gravity disturbance (degree/order 180)"
+    year: 2016
+    notes: "See Lemoine et al. 2014 and Goossens et al. 2016 LPSC 1484; Data-Sources.md"
+  - type: data
+    scope: "Control: GRAIL crustal thickness archive"
     authors:
       - family-names: Wieczorek
         given-names: Mark A.
@@ -139,6 +169,7 @@ references:
     volume: 339
     year: 2013
     doi: "10.1126/science.1231530"
+    notes: "Archive DOI 10.5281/zenodo.997347"
   - type: data
     scope: "Chronology: USGS Unified Geologic Map of the Moon (GIS v2, 1:5M)"
     authors:
@@ -147,7 +178,7 @@ references:
       - family-names: Spudis
         given-names: Paul D.
       - family-names: Harrel
-        given-names: Stephanie L.
+        given-names: Shannon L.
     title: >-
       Release of the Digital Unified Global Geologic Map of the Moon at 1:5,000,000-Scale
     year: 2020

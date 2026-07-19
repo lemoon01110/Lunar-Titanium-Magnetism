@@ -54,7 +54,8 @@ def test_dataset_has_all_expected_columns(prepared):
     df = prepared["df"]
     for col in config.ALL_FEATURES + ["lon", "lat", "age_class", "spatial_block",
                                       "row_idx", "col_idx", "tio2_terrain_valid",
-                                      "mag_binary_5nT", "mag_binary_10nT"]:
+                                      "tio2_quantitative",
+                                      "mag_binary_10nT", "mag_binary_25nT"]:
         assert col in df.columns, col
 
 
@@ -88,10 +89,10 @@ def test_antipode_distance_is_real_not_map_center(prepared):
 
 def test_prevalence_is_realistic(prepared):
     df = prepared["df"]
-    prev = df["mag_binary_5nT"].mean()
+    prev = df["mag_binary_10nT"].mean()
     assert 0.02 < prev < 0.40, f"unrealistic prevalence {prev}"
-    # 10 nT threshold must be rarer than 5 nT.
-    assert df["mag_binary_10nT"].mean() <= prev
+    # Higher threshold must be at most as prevalent as the primary cutoff.
+    assert df["mag_binary_25nT"].mean() <= prev
 
 
 def test_spatial_blocks_do_not_leak(prepared):
@@ -103,7 +104,7 @@ def test_spatial_blocks_do_not_leak(prepared):
     n_splits = min(5, len(np.unique(groups)))
     gkf = GroupKFold(n_splits=n_splits)
     X = df[config.ALL_FEATURES]
-    y = df["mag_binary_5nT"]
+    y = df["mag_binary_10nT"]
     for train_idx, test_idx in gkf.split(X, y, groups):
         assert set(groups[train_idx]).isdisjoint(set(groups[test_idx]))
 
@@ -131,8 +132,8 @@ def _scenario_discriminators(tmp_path, scenario, res=3.0, seed=11):
     df = pd.read_csv(preprocess_data(raw, proc, grid_res_deg=res))
     dfp = subset_by_age(df, "imbrian")
     cfg = config.PipelineConfig(mode="fast", grid_res_deg=res, random_seed=seed)
-    core = core_analysis(dfp, "mag_binary_5nT", cfg)
-    model = modeling.fit_final_model(dfp[config.ALL_FEATURES], dfp["mag_binary_5nT"], {}, seed)
+    core = core_analysis(dfp, "mag_binary_10nT", cfg)
+    model = modeling.fit_final_model(dfp[config.ALL_FEATURES], dfp["mag_binary_10nT"], {}, seed)
     sv, _Xs, imp = interpretability.compute_shap(model, dfp[config.ALL_FEATURES], seed, 1500)
     rank = interpretability.h1_vs_h2_ranking(imp, sv, config.ALL_FEATURES)
     return core, rank
