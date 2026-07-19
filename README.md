@@ -1,8 +1,10 @@
 # Present-Day Surface TiO₂ and Lunar Crustal Magnetic Anomalies
 
 > [!NOTE]
-> **Educational & AI-Assisted Project**
-> This repository is a personal project created for learning and hands-on experience. Artificial Intelligence (Large Language Models) was used extensively throughout its development to help me **write the code, understand the geophysical concepts, and rigorously catch statistical and logical errors**. It is a demonstration of using AI as a research and learning assistant, and the results should be read in that educational context.
+> **Independent work, openly assisted.** An independent learning project — not peer-reviewed
+> science. Language models (LLMs) assisted with code, drafting, and adversarial review;
+> scientific framing and every claim remain the author’s. Built to be checked: hashes, tests,
+> and a public decision history.
 
 *An underpowered test of spatial co-location, not a temporal test of the intermittent-dynamo mechanism*
 
@@ -73,20 +75,18 @@ The science path uses provenance-validated institutional products. Synthetic dat
 available as an isolated software-validation harness and can never silently satisfy a
 real-data run.
 
-## About this project — a learning disclosure
+## About this project
 
-This is an **independent learning project**, not professional or peer-reviewed science. I
-built it because the intermittent-dynamo idea in Nichols et al. (2026) struck me as
-incredibly interesting, and I wanted to learn — hands-on — what honestly testing such an
-idea requires: pre-registration, spatial statistics, power calibration, and the discipline
-of correcting one's own overclaims in public.
+This is an **independent learning project**, not professional or peer-reviewed science. It
+exists because the intermittent-dynamo idea in Nichols et al. (2026) is worth testing
+honestly — including pre-registration, spatial statistics, power calibration, and correcting
+overclaims in public.
 
-**Large language models (LLMs) were used extensively throughout** — for code, analysis
-design, documentation, and the adversarial reviews that produced the dated amendments in
+**Large language models (LLMs) assisted** with code, analysis design, documentation, and
+the adversarial reviews behind the dated amendments in
 [`Pre-Registration.md`](Pre-Registration.md). No AI output is treated as scientific
 evidence; every scientific choice and claim remains the author's responsibility. The full
-decision history — including the mistakes and their corrections — is deliberately preserved
-rather than hidden, because learning to correct oneself transparently was the point.
+decision history — including mistakes and their corrections — is preserved in the open.
 Criticism and corrections are welcome via issues.
 
 ## Reproduce the real-data analysis

@@ -99,10 +99,9 @@ change.
 
 Input hashes, fail-closed ingestion, fixed package versions, and seeded reruns are
 engineering safeguards. They do not make spatial pixels independent or validate a proxy in
-highland terrain. This is an independent, LLM-assisted learning project: repository
-development and the reframing used AI coding/writing assistance extensively, because learning
-to run — and honestly correct — a rigorous analysis was the project's purpose. Scientific
-responsibility remains with the repository author.
+highland terrain. Independent work, openly assisted: an LLM-assisted learning project.
+Language models helped with code, drafting, and review; scientific responsibility remains
+with the repository author.
 
 The materials in this folder (paper, slides, figures, CSV/JSON) are licensed **CC BY 4.0**
 ([`../LICENSE-CC-BY-4.0.txt`](../LICENSE-CC-BY-4.0.txt)) — reuse with credit to the author,

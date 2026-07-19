@@ -69,8 +69,8 @@
   #text(10pt)[*Jack Wu (lemoon01110)* · ORCID #link("https://orcid.org/0009-0004-1710-9018")[0009-0004-1710-9018] · #link("https://github.com/lemoon01110/Lunar-Titanium-Magnetism")[github.com/lemoon01110/Lunar-Titanium-Magnetism] · July 2026]
   #v(3pt)
   #text(9pt, fill: muted, style: "italic")[
-    An independent, LLM-assisted learning project — not peer-reviewed. See §8 for the
-    assistance and responsibility disclosure.
+    Independent work, openly assisted — an LLM-assisted learning project, not peer-reviewed.
+    See §8 for the assistance and responsibility disclosure.
   ]
 ]
 
@@ -415,13 +415,11 @@ provide engineering rigor. They do not make pixels independent, validate highlan
 or increase statistical power. The dated amendments are explicitly post hoc and preserve the
 original text.
 
-This is an *independent learning project*: the author is not a professional planetary
-scientist and undertook the work because the Nichols et al. (2026) hypothesis was
-fascinating. Large language models were used extensively — for code, analysis design,
-documentation, and the adversarial reviews behind the amendments. No AI output is treated
-as scientific evidence; responsibility for every analysis choice and claim remains with the
-author, and the complete decision history, including corrected mistakes, is preserved in
-the repository rather than hidden.
+This is an *independent learning project*, not peer-reviewed planetary science. Language
+models (LLMs) assisted with code, drafting, documentation, and adversarial review. No AI
+output is treated as scientific evidence; responsibility for every analysis choice and claim
+remains with the author. The complete decision history, including corrected mistakes, is
+preserved in the repository rather than hidden.
 
 = Conclusion
 

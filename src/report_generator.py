@@ -104,7 +104,7 @@ def generate_pdf_report(metrics_path: str, figures_dir: str, output_pdf: str) ->
     pdf.set_font("helvetica", "I", 10)
     pdf.set_text_color(0, 0, 0)
     pdf.multi_cell(0, 5, "This is a personal project created for learning and hands-on experience. "
-                         "Artificial Intelligence (Large Language Models) was used extensively "
+                         "Artificial Intelligence (Large Language Models) was used "
                          "throughout its development to help write the code, understand the geophysical "
                          "concepts, and rigorously catch statistical and logical errors.", 
                    border="LBR", align="C", fill=True)
